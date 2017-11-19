@@ -12,7 +12,8 @@ import vnr.graph.Graph;
 
 public class NodeRank {
 	
-	public static Graph g;//启发：定义一个静态变量，在打算用这个类下面的方法的时候，先给g赋值，然后在调用方法。这样比pagerank工程里面的每个方法都传递一遍g要更好，节省空间。但是有个问题是，当要对多个图的rank的时候，需要考虑g的值是要跟着变的。
+	public Graph g;//启发：定义一个静态变量，在打算用这个类下面的方法的时候，先给g赋值，然后在调用方法。这样比pagerank工程里面的每个方法都传递一遍g要更好，节省空间。但是有个问题是，当要对多个图的rank的时候，需要考虑g的值是要跟着变的。
+//	public Graph graph;
 	//返回一个map
 	/**返回的是一个list<map.entry>，并且已经按照降序排序*/
 	/**返回的是一个list<map.entry>，并且已经按照降序排序*/
@@ -20,7 +21,13 @@ public class NodeRank {
 	*作用：计算VNR中各个节点重要度值，并按照该值进行排名
 	*参数：方法没有参数，而是在rank类中定义了静态变量用于将待计算的VNR传递到方法内
 	*返回类型：为了便于对各个节点对应的重要度值进行排序，采用列表存储map的key--value值*/
-	public static List<Map.Entry<Integer,Double>> rank()throws Exception{//用的静态的，想想啥时候用static啥时候用隐式啥啥的。就是那个只需要new，不需要指向对象引用的。
+	
+	
+	public NodeRank(Graph g){
+		this.g=g;
+		
+	}
+	public List<Map.Entry<Integer,Double>> rank()throws Exception{//用的静态的，想想啥时候用static啥时候用隐式啥啥的。就是那个只需要new，不需要指向对象引用的。
 		int n=g.getNumOfNode();
 		double[] init=new double[g.getNumOfNode()];//排名算法执行前节点的初始化值
 		double[] temp=new double[g.getNumOfNode()];//节点初始化值量化时用到的中间量，用于计算存储初始化值得和，
@@ -100,13 +107,13 @@ public class NodeRank {
 		return entries;
 	}
 /**计算两个节点间影响。*/
-	public static double nov(int m,int n)throws Exception{
+	public double nov(int m,int n)throws Exception{
 //		double novM=0;
 		int dis=Dijskra.dijskra(g, m, n);
 		return (double)g.getCpu(m)*g.getCpu(n)/(double)(dis*dis)*0.01;//这里乘的0.01是在把代码初步实现运行之后，发现结果不理想，挨个排查发现，这一步的值到后来很容易变得特别特别大，不好收敛，于是，用0.01进行修正，让他能收敛
 	} 
 /**全局其他节点对某个节点的综合影响*/
-	public static double novM(int m)throws Exception{
+	public double novM(int m)throws Exception{
 		double novM=0;
 		
 		for(int i=0;i<g.getNumOfNode();i++){

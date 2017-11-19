@@ -1,9 +1,10 @@
 package vnr.main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
 
 import vnr.bandit.Embedding;
 import vnr.bandit.ProbabilitySelected;
@@ -23,14 +24,17 @@ public class Main {
 		int nodeNum=6,edgeNum=9;
 		int nodeNum2=3,edgeNum2=3;
 		
+
+		
 //		double[] rank=new double[nodeNum];
 //		Map<Integer,Double> map=null;
 		
 		List<Map.Entry<Integer,Double>> rank=new ArrayList<Map.Entry<Integer,Double>>();
+		List<Map.Entry<Integer,Double>> rank2=new ArrayList<Map.Entry<Integer,Double>>();//VNR
 		
 		LinkedHashMap<Integer,Double> embOrder =new LinkedHashMap<Integer,Double>();
 		
-
+		LinkedHashMap<Integer,Integer> result=new LinkedHashMap<Integer,Integer>();
 		
 		Node[] node={new Node(10),new Node(8),new Node(5),new Node(3),new Node(9),new Node(4)};
 		
@@ -71,6 +75,11 @@ public class Main {
 		
 		CreateGraph.create(g, node, nodeNum, edge, edgeNum);
 		CreateGraph.create(g2, node2, nodeNum2, edge2, edgeNum2);
+		
+		NodeRank nr=new NodeRank(g);
+		NodeRank nr2=new NodeRank(g2);
+		
+		
 		try{
 			
 			
@@ -82,23 +91,23 @@ public class Main {
 //
 //			}
 			
-
+//			rank=nr.rank();
+			rank2=nr2.rank();
+//			for(int i=0;i<rank.size();i++){
+//				System.out.println("g2排名结果："+rank2.get(i).getKey()+"--"+rank2.get(i).getValue());
+//			}
 			
-			NodeRank.g=g;
-			rank=NodeRank.rank();
-
-			for(int i=0;i<rank.size();i++){
-				System.out.println("排名结果："+rank.get(i).getKey()+"--"+rank.get(i).getValue());
-			}
-			
-			embOrder=EmbedOrder.embOrder(rank,g);
+			embOrder=EmbedOrder.embOrder(rank2,g2);
 //			for(Map.Entry<Integer, Double> entry:embOrder.entrySet()){
 //				System.out.println("main_key_emborder"+entry.getKey());
 //			}
 			
-			Embedding.embedding(embOrder, g);
+			result=Embedding.embedding(embOrder, g2, g);
 			
-			
+				
+			for(Map.Entry<Integer, Integer> entry:result.entrySet()){
+				System.out.println("最终对于VNR的映射结果："+entry.getKey()+"--"+entry.getValue());
+			}
 			
 			
 //			Arrays.sort(rank);
