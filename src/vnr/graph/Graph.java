@@ -66,6 +66,9 @@ public class Graph {
 	public Node getNode(int n){
 		return nodeList.get(n);
 	}
+	public int[][] getEdges(){
+		return edges;
+	}
 	
 	
 	

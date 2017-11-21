@@ -41,9 +41,7 @@ public class Embedding {
 		}catch(Exception e){
 			System.out.println("Embedding__embedding():"+e);
 		}
-		
-	
-		
+				
 //		emb.put(key, value)
 		
 		return emb;
