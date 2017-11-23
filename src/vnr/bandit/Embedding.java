@@ -23,30 +23,32 @@ public class Embedding {
 //		double[] sim=new double[pn.getNumOfNode()];//待改进：这里不好。这个数组肯定用不到这么大，
 		boolean[] f=new boolean[pn.getNumOfNode()];//用于标志这个节点有没有被当前虚拟网络映射过
 		int s;//用于存储被选中的节点的下标，因为是随机产生的，所以多次调用方法
-		
-		
-		
-				
+						
 		try{
 			
 			/*映射第一个和第二个节点，随即选择三次后选择最好的*/
 			System.out.println("Embedding__开始映射节点");
 			Iterator<Map.Entry<Integer,Double>> it=embOrder.entrySet().iterator();//用于遍历整个带映射网络的节点
 			
-			List<Integer> pathTemp=new LinkedList<Integer>();
+//			List<Integer> pathTemp=new LinkedList<Integer>();//启发：这个变量在这里定义不好，因为每一次的循环都需要pathTemp是空的
 			
 			int t=0;//用于在while循环中判断节点是不是前两个节点
 			int sTemp;//由于对于一个节点要映射多次，所以用于临时存储所有可能结果。
 			int sTemp2;//都是因为前两个节点的处理顺序跟其他 节点的处理顺序不太一致，都需要单独存储。
 			/*开始挨个映射节点和链路，只是最初的两个节点的映射要不太一样*/
 			while(it.hasNext()){
+				System.out.println("这里来了几次啊      ！！！！！");
 				if(t<2){
 					Map.Entry<Integer, Double> entry =it.next();
 					Map.Entry<Integer, Double> entry2=it.next();
+					System.out.println("ititititi"+entry);
+					System.out.println("ititititi22222"+entry2);
 					int lTemp=pn.getNumOfEdge();//用于存储某次节点映射之后路径的
+					int disTemp=5000;//用于存储某条暂时被选中的路径的长度，初始化为最大路径值
+					List<Integer> pathTemp=new LinkedList<Integer>();
 //					double[] sim=new double[pn.getNumOfNode()];//待改进：这里不好。这个数组肯定用不到这么大，++但是，每个i都有可能被记录，所以用这么大的数组是可以的。
 					//sim作用：由于需要计算每个符合要求的节点的相似度的所占的比例，作为概率选择的概率，所以需要存储与所有的符合要求的点的相似度，用于求和后再计算比值。启发，想知道有没有别的办法可以直接就计算了比值了，感觉是没有的，嘿嘿
-					int[][] disTemp = new int[pn.getNumOfNode()][pn.getNumOfNode()];
+					//int[][] disTemp = new int[pn.getNumOfNode()][pn.getNumOfNode()];
 					boolean[] fTemp=new boolean[pn.getNumOfNode()];//用于标志这个节点在回退过程中，有么有被映射过
 					{						
 						double[] sim=new double[pn.getNumOfNode()];//待改进：这里不好。这个数组肯定用不到这么大，++但是，每个i都有可能被记录，所以用这么大的数组是可以的。
@@ -76,14 +78,14 @@ public class Embedding {
 						System.out.println("此次选中节点："+sTemp2);
 					}
 					
-					pathTemp=Floyd.floyd(pn, sTemp, sTemp2,disTemp);
-					lTemp=disTemp[sTemp][sTemp2];
-					System.out.println("路径长度"+lTemp);
+//					pathTemp=Floyd.floyd(pn, sTemp, sTemp2,disTemp);
+//					lTemp=disTemp[sTemp][sTemp2];
+					System.out.println("路径长度"+Floyd.floyd(pn, sTemp, sTemp2, pathTemp));
+										
+					for(int i=0;i<pathTemp.size();i++){
+						System.out.println("临时路径存储测试："+pathTemp.get(i));
+					}
 					
-//					for(int i=0;i<pathTemp.size();i++){
-//						System.out.println("临时路径存储测试："+path.get(i));
-//					}
-//					
 					
 
 
@@ -97,9 +99,12 @@ public class Embedding {
 					
 				}else{
 					/*当处理完前两个节点之后，开始处理后面的节点处理方式相同*/
+					System.out.println("这里过来过吗？？？");
 					
 				}
 				
+				t++;
+				System.out.println("这里t开始增加"+t);
 				
 			}
 			

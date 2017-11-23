@@ -41,6 +41,7 @@ public class Main {
 		Node[] node={new Node(10),new Node(8),new Node(5),new Node(3),new Node(9),new Node(4)};
 		
 		List<Integer> path=new LinkedList<Integer>();
+		int dis;
 		
 
 //		Edge[] edge={
@@ -119,11 +120,11 @@ public class Main {
 //			}
 			
 			embOrder=EmbedOrder.embOrder(rank2,g2);
-//			for(Map.Entry<Integer, Double> entry:embOrder.entrySet()){
-//				System.out.println("main_key_emborder"+entry.getKey());
-//			}
-			
+			for(Map.Entry<Integer, Double> entry:embOrder.entrySet()){
+				System.out.println("main_key_emborder"+entry.getKey());
+			}
 			result=Embedding.embedding(embOrder, g2, g);
+			System.out.println("还好阿");
 			
 				
 			for(Map.Entry<Integer, Integer> entry:result.entrySet()){
@@ -133,13 +134,13 @@ public class Main {
 			
 			//link embedding
 //			path=Floyd.floyd(g, 1, 0,);
-			path=Floyd.floyd(g, 1, 0, distance);
+			dis=Floyd.floyd(g, 1, 0, path);
 			
 			
-			for(int i=0;i<path.size();i++){
-				System.out.print("路径："+path.get(i));
-			}
-			
+//			for(int i=0;i<path.size();i++){
+//				System.out.print("路径："+path.get(i));
+//			}
+//			
 			
 			
 //			Arrays.sort(rank);

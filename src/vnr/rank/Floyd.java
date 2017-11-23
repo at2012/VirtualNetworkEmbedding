@@ -11,34 +11,38 @@ public class Floyd {
 	 * 作用：计算两个节点之间的最短路径<p>
 	 * 参数：起始、终止节点下标,节点所在图，<p>
 	 * 返回类型：路径list*/
-	public static List<Integer> floyd(Graph g,int s,int d,int[][] distance){
-//		for(int i)
-		List<Integer> p=new LinkedList<Integer>();
+//	public static List<Integer> floyd(Graph g,int s,int d,int[][] distance){
+	/**
+	 * @author Jing
+	 * @param 待求路径的图，起始节点，终止节点，起始终止节点之间的路径（用于将结果带出方法）
+	 * @return 路径长度*/
+	public static int floyd(Graph g,int s,int d,List<Integer> path){
 		
-		Stack<Integer> stack=new Stack<Integer>	();
+//		for(int i)
+//		List<Integer> p=new LinkedList<Integer>();
+		
+		
+		
+		int[][] distance=new int[g.getNumOfNode()][g.getNumOfNode()];//用于存储整个图中每对节点之间的最短路径距离，初始时候二位数据的值是物理拓扑的边信息。
+		Stack<Integer> stack=new Stack<Integer>	();//用于将路径倒序后加入path 的list
+		int[][] p=new int[g.getNumOfNode()][g.getNumOfNode()];//floyd算法中为了记录路径
 		
 		final int maxWeight=5000;
 		int n=g.getNumOfNode();
 //		int[][] distance=new int[g.getNumOfNode()][g.getNumOfNode()];
-		int[][] path=new int[g.getNumOfNode()][g.getNumOfNode()];
+
 //		int temp=0;
 		//初始化，到v的距离，直接相连的是值，自己是0，没有的事weight，直接getweight就成，注意把所有的标记为未被访问，
 		
 		try{
-			System.arraycopy(g.getEdges(), 0, distance, 0, g.getNumOfNode());
-			
-//			
-//			for(int i=0;i<n;i++){
-//				distance[i]=g.getWeight(s, i);
-//			}
-			
-			
+			System.arraycopy(g.getEdges(), 0, distance, 0, g.getNumOfNode());//用物理拓扑的边信息初始化节点间最短路径
+						
 			for(int i=0;i<n;i++){
 				for(int j=0;j<n;j++){
 					if(g.getWeight(i, j)==maxWeight){
-						path[i][j]=-1;
+						p[i][j]=-1;
 					}else{
-						path[i][j]=i;
+						p[i][j]=i;
 					}
 				}
 			}
@@ -49,7 +53,7 @@ public class Floyd {
 					for(int j=0;j<n;j++){
 						if(!(distance[i][k]==maxWeight || distance[k][j]==maxWeight) && distance[i][j]>distance[i][k]+distance[k][j]){
 							distance[i][j]=distance[i][k]+distance[k][j];
-							path[i][j]=path[k][j];
+							p[i][j]=p[k][j];
 						}
 					}
 				}
@@ -57,10 +61,10 @@ public class Floyd {
 			
 			stack.push(d);
 //			System.out.println("stack内容："+d+"入栈");
-			while(path[s][d]!=s){
-				stack.push(path[s][d]);
+			while(p[s][d]!=s){
+				stack.push(p[s][d]);
 //				System.out.println("stack内容："+path[s][d]+"入栈");
-				d=path[s][d];
+				d=p[s][d];
 			}
 			stack.push(s);
 //			System.out.println("stack内容："+path[s][d]+"入栈");
@@ -78,11 +82,11 @@ public class Floyd {
 			
 			/*把路径存入list，*/
 			while(!stack.empty()){//待改进，这种先存站在出战到list得行为不好，而且意义不明确，而且很可能根本没意义，所以最好是弄懂程序以后改下。
-				p.add(stack.pop());
+				path.add(stack.pop());
 			}
 			System.out.println("路径映射结果：");
-			for(int i=0;i<p.size();i++) {
-				System.out.print(p.get(i)+"\t");
+			for(int i=0;i<path.size();i++) {
+				System.out.print(path.get(i)+"\t");
 			}
 			System.out.println();
 	
@@ -91,7 +95,7 @@ public class Floyd {
 			System.out.println("Floyd:---"+e);
 		}
 
-		return p;	
+		return distance[s][d];	
 	}
 	
 
