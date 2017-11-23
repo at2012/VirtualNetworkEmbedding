@@ -95,6 +95,8 @@ public class Main {
 		NodeRank nr=new NodeRank(g);
 		NodeRank nr2=new NodeRank(g2);
 		
+		int[][] distance = new int[g.getNumOfNode()][g.getNumOfNode()];
+		
 		
 
 		
@@ -130,7 +132,8 @@ public class Main {
 			
 			
 			//link embedding
-			path=Floyd.floyd(g, 0, 5);
+//			path=Floyd.floyd(g, 1, 0,);
+			path=Floyd.floyd(g, 1, 0, distance);
 			
 			
 			for(int i=0;i<path.size();i++){

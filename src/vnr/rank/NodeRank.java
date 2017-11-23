@@ -15,18 +15,16 @@ public class NodeRank {
 	public Graph g;//启发：定义一个静态变量，在打算用这个类下面的方法的时候，先给g赋值，然后在调用方法。这样比pagerank工程里面的每个方法都传递一遍g要更好，节省空间。但是有个问题是，当要对多个图的rank的时候，需要考虑g的值是要跟着变的。
 //	public Graph graph;
 	//返回一个map
-	/**返回的是一个list<map.entry>，并且已经按照降序排序*/
-	/**返回的是一个list<map.entry>，并且已经按照降序排序*/
-	/**
-	*作用：计算VNR中各个节点重要度值，并按照该值进行排名
-	*参数：方法没有参数，而是在rank类中定义了静态变量用于将待计算的VNR传递到方法内
-	*返回类型：为了便于对各个节点对应的重要度值进行排序，采用列表存储map的key--value值*/
-	
-	
 	public NodeRank(Graph g){
 		this.g=g;
 		
 	}
+	/**返回的是一个list<map.entry>，并且已经按照降序排序*/
+	/**返回的是一个list<map.entry>，并且已经按照降序排序*/
+	/**
+	*作用：计算VNR中各个节点重要度值，并按照该值进行排名<p>
+	*参数：方法没有参数，而是在rank类中定义了静态变量用于将待计算的VNR传递到方法内<p>
+	*返回类型：为了便于对各个节点对应的重要度值进行排序，采用列表存储map的key--value值*/
 	public List<Map.Entry<Integer,Double>> rank()throws Exception{//用的静态的，想想啥时候用static啥时候用隐式啥啥的。就是那个只需要new，不需要指向对象引用的。
 		int n=g.getNumOfNode();
 		double[] init=new double[g.getNumOfNode()];//排名算法执行前节点的初始化值
@@ -37,7 +35,7 @@ public class NodeRank {
 		double tolCpu=0.00;
 		
 		
-		Map<Integer,Double> map=new HashMap<Integer,Double>();
+		Map<Integer,Double> map=new HashMap<Integer,Double>();//节点的排名值，key-value分别是：节点在图中下标，节点的当前排名值
 		
 		
 		for(int i=0;i<n;i++){
@@ -54,20 +52,18 @@ public class NodeRank {
 		//对于每一个节点，计算自己在全局中的初始排名
 		for(int i=0;i<g.getNumOfNode();i++){
 //			init[i]=temp[i]/tolInit;
-			init[i]=(double)(Math.round(temp[i]/tolInit*10000))/10000;
+			init[i]=(double)(Math.round(temp[i]/tolInit*10000))/10000;//节点初始排名值保留小数
 //			System.out.println("init:"+init[i]);
 		}
-		
-		
-
 		for(int i=0;i<n;i++){
 			map.put(i, init[i]);
 		}
+		//y以上终于完成了初始化pr
 		
+		
+		/*循环计算节点的最终排名*/
 		int z=35;//排名计算的循环次数
-		
 		while(z>0){
-			
 			for(int i=0;i<n;i++){//修改：这里很多的地方用到节点数量，可以考虑增加一个变量
 				map.put(i, 0.6*cpuPro[i]);
 //				rank[i]=0.6*cpuPro[i];
@@ -79,10 +75,9 @@ public class NodeRank {
 					}
 				}
 			}
-			
 			z--;
 		}
-		//y以上终于完成了初始化pr
+
 		
 //		
 //		Map<Integer,Double> map=new HashMap<Integer,Double>();
@@ -94,6 +89,8 @@ public class NodeRank {
 //		for(Double value:map.values()){
 //			System.out.println("nodeRank:"+value);
 //		}
+		
+		/*把排名结果按照顺序存入list？？？？？？？？？？？？？*/
 		ArrayList<Map.Entry<Integer,Double>> entries=sortMap(map);
 		//test
 //		for(int i=0;i<g.getNumOfNode();i++){
@@ -127,7 +124,7 @@ public class NodeRank {
 	/**
 	 *启发，这里考虑下要不要把开始的时候节点就存储在map里面
 	 *对map进行降序排序*/
-	public static ArrayList<Map.Entry<Integer,Double>> sortMap(Map map){
+	public static ArrayList<Map.Entry<Integer,Double>> sortMap(Map<Integer,Double> map){
 //		ArrayList re=new ArrayList();
 		List<Map.Entry<Integer,Double>> entries =new ArrayList<Map.Entry<Integer,Double>>(map.entrySet());
 		

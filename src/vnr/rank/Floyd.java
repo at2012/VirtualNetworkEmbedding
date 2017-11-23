@@ -7,7 +7,11 @@ import java.util.Stack;
 import vnr.graph.Graph;
 
 public class Floyd {
-	public static List<Integer> floyd(Graph g,int s,int d){
+	/**
+	 * 作用：计算两个节点之间的最短路径<p>
+	 * 参数：起始、终止节点下标,节点所在图，<p>
+	 * 返回类型：路径list*/
+	public static List<Integer> floyd(Graph g,int s,int d,int[][] distance){
 //		for(int i)
 		List<Integer> p=new LinkedList<Integer>();
 		
@@ -15,7 +19,7 @@ public class Floyd {
 		
 		final int maxWeight=5000;
 		int n=g.getNumOfNode();
-		int[][] distance=new int[g.getNumOfNode()][g.getNumOfNode()];
+//		int[][] distance=new int[g.getNumOfNode()][g.getNumOfNode()];
 		int[][] path=new int[g.getNumOfNode()][g.getNumOfNode()];
 //		int temp=0;
 		//初始化，到v的距离，直接相连的是值，自己是0，没有的事weight，直接getweight就成，注意把所有的标记为未被访问，
@@ -61,10 +65,8 @@ public class Floyd {
 			stack.push(s);
 //			System.out.println("stack内容："+path[s][d]+"入栈");
 			System.out.println("stack大小："+stack.size());
+			System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
 			
-//			System.out.println(stack.empty());
-			
-
 //			for(int i=0;i<stack.size();i++){//启发，又是这个毛病！！！！！！stack.size()的值是会变会变会变得！！！！！没错！！！在循环里面用到出栈的的时候，，size的值是会变得，要把最初的size值单独存储作为循环的界限。突然想到，为什么不用while？？？
 ////				直到为空，是的，while循环比较好！！！
 //				
@@ -74,10 +76,15 @@ public class Floyd {
 //				p.add(stack.pop());
 //			}
 			
-			
-			while(!stack.empty()){
+			/*把路径存入list，*/
+			while(!stack.empty()){//待改进，这种先存站在出战到list得行为不好，而且意义不明确，而且很可能根本没意义，所以最好是弄懂程序以后改下。
 				p.add(stack.pop());
 			}
+			System.out.println("路径映射结果：");
+			for(int i=0;i<p.size();i++) {
+				System.out.print(p.get(i)+"\t");
+			}
+			System.out.println();
 	
 			
 		}catch(Exception e){
