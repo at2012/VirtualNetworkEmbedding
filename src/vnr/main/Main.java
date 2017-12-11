@@ -2,18 +2,16 @@ package vnr.main;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import vnr.bandit.Embedding;
-import vnr.bandit.ProbabilitySelected;
 import vnr.bandit.Similarity;
 import vnr.graph.CreateGraph;
 import vnr.graph.Edge;
 import vnr.graph.Graph;
 import vnr.graph.Node;
-import vnr.rank.Dijskra;
 import vnr.rank.EmbedOrder;
 import vnr.rank.Floyd;
 import vnr.rank.NodeRank;
@@ -40,7 +38,7 @@ public class Main {
 		
 		Node[] node={new Node(10),new Node(8),new Node(5),new Node(3),new Node(9),new Node(4)};
 		
-		List<Integer> path=new LinkedList<Integer>();
+		Stack<Integer> path=new Stack<Integer>();
 		int dis;
 		
 
@@ -57,28 +55,28 @@ public class Main {
 //};
 //		
 //		
-//		Edge[] edge={
-//				new Edge(0,1,1),
-//				new Edge(0,2,1),
-//				new Edge(1,2,1),
-//				new Edge(1,3,1),
-//				new Edge(3,2,1),
-//				new Edge(3,4,1),
-//				new Edge(2,4,1),
-//				new Edge(3,5,1),
-//				new Edge(4,5,1)};
-		
-		
 		Edge[] edge={
-				new Edge(0,1,6),
-				new Edge(0,2,3),
-				new Edge(1,2,2),
-				new Edge(1,3,5),
-				new Edge(3,2,3),
-				new Edge(3,4,2),
-				new Edge(2,4,4),
-				new Edge(3,5,3),
-				new Edge(4,5,5)};
+				new Edge(0,1,1),
+				new Edge(0,2,1),
+				new Edge(1,2,1),
+				new Edge(1,3,1),
+				new Edge(3,2,1),
+				new Edge(3,4,1),
+				new Edge(2,4,1),
+				new Edge(3,5,1),
+				new Edge(4,5,1)};
+		
+		
+//		Edge[] edge={
+//				new Edge(0,1,6),
+//				new Edge(0,2,3),
+//				new Edge(1,2,2),
+//				new Edge(1,3,5),
+//				new Edge(3,2,3),
+//				new Edge(3,4,2),
+//				new Edge(2,4,4),
+//				new Edge(3,5,3),
+//				new Edge(4,5,5)};
 		Graph g=new Graph(nodeNum);
 		
 		
