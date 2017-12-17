@@ -43,7 +43,9 @@ public class Graph {
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!注意这里的get方法，现在不知道有啥作用
 		//后来发现，是get图中，某个节点的 值
 	}
-	
+	public int getMax() {
+		return maxWeight;
+	}
 	
 	public int getCpu(int n)throws Exception{
 //		Node temp=nodeList.get(n);

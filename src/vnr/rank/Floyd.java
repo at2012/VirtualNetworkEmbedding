@@ -13,7 +13,10 @@ public class Floyd {
 //	public static List<Integer> floyd(Graph g,int s,int d,int[][] distance){
 	/**
 	 * @author Jing
-	 * @param 待求路径的图，起始节点，终止节点，起始终止节点之间的路径（用于将结果带出方法）
+	 * @param g 待求最短路径的图
+	 * @param s 路径的起始节点
+	 * @param d 路径的目的节点
+	 * @param path 起始终止节点之间的路径（用于将结果带出方法）
 	 * @return 路径长度*/
 //	public static int floyd(Graph g,int s,int d,List<Integer> path){
 	public static int floyd(Graph g,int s,int d,Stack<Integer> path) {
@@ -27,7 +30,6 @@ public class Floyd {
 //		Stack<Integer> stack=new Stack<Integer>	();//用于将路径倒序后加入path 的list
 		int[][] p=new int[g.getNumOfNode()][g.getNumOfNode()];//floyd算法中为了记录路径
 		
-		final int maxWeight=5000;
 		int n=g.getNumOfNode();
 //		int[][] distance=new int[g.getNumOfNode()][g.getNumOfNode()];
 
@@ -35,31 +37,49 @@ public class Floyd {
 		//初始化，到v的距离，直接相连的是值，自己是0，没有的事weight，直接getweight就成，注意把所有的标记为未被访问，
 		
 		try{
+			/*
+			 * 初始化distance
+			 */
+			for(int i=0;i<n;i++) {
+				for(int j=0;j<n;j++) {
+					distance[i][j]=g.getWeight(i, j);
+				}
+			}
 			
-			System.arraycopy(g.getEdges(), 0, distance, 0, g.getNumOfNode());//用物理拓扑的边信息初始化节点间最短路径
-						
+//			System.out.println("dis复制之后");
+//			for(int i=0;i<n;i++) {
+//				for(int j=0;j<n;j++) {
+//					System.out.print(distance[i][j]+"\t");
+//				}
+//				System.out.println();
+//			}
+			
+			/*
+			 * 初始化path			
+			 */
 			for(int i=0;i<n;i++){
 				for(int j=0;j<n;j++){
-					if(g.getWeight(i, j)==maxWeight){
+					if(g.getWeight(i, j)==g.getMax()){
 						p[i][j]=-1;
 					}else{
 						p[i][j]=i;
 					}
 				}
 			}
-			
-			for(int i=0;i<n;i++) {
-				for(int j=0;j<n;j++) {
-					System.out.print(p[i][j]+"\t");
-				}
-				System.out.println();
-			}
+//			System.out.println("path初始化之后");
+//			for(int i=0;i<n;i++) {
+//				for(int j=0;j<n;j++) {
+//					System.out.print(p[i][j]+"\t");
+//				}
+//				System.out.println();
+//			}
 			
 			
 			for(int k=0;k<n;k++){
 				for(int i=0;i<n;i++){
 					for(int j=0;j<n;j++){
-						if(!(distance[i][k]==maxWeight || distance[k][j]==maxWeight) && distance[i][j]>distance[i][k]+distance[k][j] && i!=j){
+//						if(!(distance[i][k]==maxWeight || distance[k][j]==maxWeight) && distance[i][j]>distance[i][k]+distance[k][j] && i!=j){
+						if(distance[i][j]>distance[i][k]+distance[k][j]) {
 							distance[i][j]=distance[i][k]+distance[k][j];
 							p[i][j]=p[k][j];
 						}
@@ -70,7 +90,6 @@ public class Floyd {
 			
 			int m;//m用作查找路径的中间值，
 			m=d;
-//			stack.push(d);
 			path.push(d);
 			while(m!=s) {
 				m=p[s][m];
@@ -113,7 +132,6 @@ public class Floyd {
 		}catch(Exception e){
 			System.out.println("Floyd:---"+e);
 		}
-		System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
 		return distance[s][d];	
 	}
 	
