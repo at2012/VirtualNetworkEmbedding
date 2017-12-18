@@ -103,7 +103,7 @@ public class Floyd {
 //			}
 //			stack.push(s);
 //			System.out.println("stack内容："+path[s][d]+"入栈");
-			System.out.println("stack大小："+path.size());
+//			System.out.println("stack大小："+path.size());
 			System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
 			
 //			for(int i=0;i<stack.size();i++){//启发，又是这个毛病！！！！！！stack.size()的值是会变会变会变得！！！！！没错！！！在循环里面用到出栈的的时候，，size的值是会变得，要把最初的size值单独存储作为循环的界限。突然想到，为什么不用while？？？
