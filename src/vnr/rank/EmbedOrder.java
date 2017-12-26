@@ -49,18 +49,6 @@ public class EmbedOrder {
 			System.out.println("EmbedOrder__embOrder--"+e);
 		}
 
-//		for(Map.Entry<Integer, Double> entry:embOrderTemp.entrySet()){
-//			map.put(entry.getKey(), entry.getValue());
-//			
-//			System.out.println("key="+entry.getKey()+",value="+entry.getValue());
-//		}
-//		embOrder.add(map);
-//		for(int i=0;i<embOrder.size();i++){
-//			System.out.println("已经被添加到list："+embOrder.get(i));
-//		}
-		
-		
-		
 		
 		return embOrderTemp;
 		

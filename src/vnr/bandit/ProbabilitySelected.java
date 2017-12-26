@@ -47,31 +47,7 @@ public class ProbabilitySelected {
 			}
 			
 		}
-//		for(int i=0;i<sim.size();i++){
-//			if(left<=ran && ran<right){
-//				re=i;
-//				break;
-//			}else{
-//				left=right;
-//				right+=temp[i+1];
-//			}
-//			
-//		}
-				
-//		if(0<=ran && ran<sim[0]/tol)
-//			re=0;
-//		for(int i=1;i<sim.length;i++){
-////			if(0<=ran && ran<sim[i])
-////				return i;
-//			if(i<sim.length-1){
-//				if(sim[i]/tol<=ran && ran<=sim[i]+sim[i+1]/tol)//Âß¼­ÓÐÎÊÌâ
-//					re=i;
-//			}else{
-//				re=sim.length-1;
-//			}
-////			else
-////				continue;		
-//		}
+
 		return re;
 	}
 

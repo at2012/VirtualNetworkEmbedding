@@ -112,13 +112,6 @@ while(true){
 
 	return path;
 }
-
-			
-//			return distance[w];	
-			
-			
-//			return path;
-			
 			
 		}
 

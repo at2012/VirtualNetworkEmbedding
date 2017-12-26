@@ -79,16 +79,7 @@ public class NodeRank {
 		}
 
 		
-//		
-//		Map<Integer,Double> map=new HashMap<Integer,Double>();
-//		for(int i=0;i<g.getNumOfNode();i++){
-//			map.put(i, rank[i]);
-//		}
-//		
-		//test
-//		for(Double value:map.values()){
-//			System.out.println("nodeRank:"+value);
-//		}
+
 		
 		/*把排名结果按照顺序存入list？？？？？？？？？？？？？*/
 		ArrayList<Map.Entry<Integer,Double>> entries=sortMap(map);

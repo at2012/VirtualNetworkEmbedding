@@ -46,13 +46,6 @@ public class Floyd {
 				}
 			}
 			
-//			System.out.println("dis复制之后");
-//			for(int i=0;i<n;i++) {
-//				for(int j=0;j<n;j++) {
-//					System.out.print(distance[i][j]+"\t");
-//				}
-//				System.out.println();
-//			}
 			
 			/*
 			 * 初始化path			
@@ -66,13 +59,6 @@ public class Floyd {
 					}
 				}
 			}
-//			System.out.println("path初始化之后");
-//			for(int i=0;i<n;i++) {
-//				for(int j=0;j<n;j++) {
-//					System.out.print(p[i][j]+"\t");
-//				}
-//				System.out.println();
-//			}
 			
 			
 			for(int k=0;k<n;k++){
@@ -95,37 +81,12 @@ public class Floyd {
 				m=p[s][m];
 				path.push(m);
 			}
-//			System.out.println("stack内容："+d+"入栈");
-//			while(p[s][d]!=s){
-//				stack.push(p[s][d]);
-////				System.out.println("stack内容："+path[s][d]+"入栈");
-//				d=p[s][d];
-//			}
-//			stack.push(s);
-//			System.out.println("stack内容："+path[s][d]+"入栈");
-//			System.out.println("stack大小："+path.size());
 			System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
 			
-//			for(int i=0;i<stack.size();i++){//启发，又是这个毛病！！！！！！stack.size()的值是会变会变会变得！！！！！没错！！！在循环里面用到出栈的的时候，，size的值是会变得，要把最初的size值单独存储作为循环的界限。突然想到，为什么不用while？？？
-////				直到为空，是的，while循环比较好！！！
-//				
-////				System.out.println("栈顶元素"+stack.peek());
-////				System.out.println("取得栈顶"+stack.pop());
-//				System.out.println("到底执行几遍啊啊啊啊"+stack.size());
-//				p.add(stack.pop());
-//			}
-			
-			/*把路径存入list，*/
-//			while(!stack.empty()){//待改进，这种先存站在出战到list得行为不好，而且意义不明确，而且很可能根本没意义，所以最好是弄懂程序以后改下。
-//				path.add(stack.pop());
-//			}
 			System.out.println("floyd___路径映射结果：");
 			while(!path.isEmpty()) {
 				System.out.print(path.pop()+"->");
 			}
-//			for(int i=0;i<path.size();i++) {
-//				System.out.print(path.get(i)+"\t");
-//			}
 			System.out.println();
 	
 			
