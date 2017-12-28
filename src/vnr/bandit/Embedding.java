@@ -1,5 +1,7 @@
 package vnr.bandit;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,8 +23,12 @@ public class Embedding {
 //		double[] sim=new double[pn.getNumOfNode()];//待改进：这里不好。这个数组肯定用不到这么大，
 		boolean[] f=new boolean[pn.getNumOfNode()];//用于标志这个节点有没有被当前虚拟网络映射过
 		int s;//用于存储被选中的节点的下标，因为是随机产生的，所以多次调用方法
-						
+		
+		
+		File resFile =new File("result.txt");
 		try{
+			
+			PrintWriter resOutput=new PrintWriter(resFile);			
 			
 			/*映射第一个和第二个节点，随即选择三次后选择最好的*/
 			System.out.println("Embedding__开始映射节点");
@@ -80,6 +86,10 @@ public class Embedding {
 						}
 						/*启发：这里用了两个程序块，因为一个待映射节点对应一个sim数组，这个数组在存储的时候我是用节点下标作为数组下标的，为了不让上一次被允许的几点的sim值影响下一个节点的值，
 						 * 所以sim这个数组，对于每一个待映射节点 都需要从空的数组开始，可以每次用之前更新赋值为0，但是我选择了使用俩程序块，在每个块里定义数组，这样更新，*/
+						
+						/*
+						 * 以下模块首先计算所有满足要求的节点的相似度，然后通过概率选中选择节点。
+						 */
 						{
 //							ArrayList<Double> sim=new ArrayList<Double>();//待改进：这里不好。这个数组肯定用不到这么大，++但是，每个i都有可能被记录，所以用这么大的数组是可以的。
 							Map<Integer,Double> sim=new HashMap<Integer,Double>();
@@ -104,17 +114,18 @@ public class Embedding {
 							lastSel=lasTemp;
 							pathSel=pathTemp;
 						}
-						
-//						/*在这里就可以把映射结果加入到map里面啦*///这里还不行哦，还在循环里面，等到循环完了再去put
-//						emb.put(entryFirst.getKey(), firstSel);
-//						emb.put(entry.getKey(), lastSel);
 					}
 					
 					/*在这里就可以把映射结果加入到map里面啦*/
 					emb.put(entryFirst.getKey(), firstSel);
 					emb.put(entry.getKey(), lastSel);
+					resOutput.printf("%d\t%d\t%d\t%d\r\n",entryFirst.getKey(),firstSel,entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
 					f[firstSel]=true;//物理节点被最终选定后，记得标记下，后面不再选择
 					f[lastSel]=true;
+					
+					
+					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
+					
 					System.out.println("embedding___最终映射结果__前两个节点"+firstSel+"--"+lastSel);
 				}else {//对于除了前两个节点以外的其他节点的映射
 					
@@ -123,6 +134,9 @@ public class Embedding {
 					Stack<Integer> pathSel;//某对被选中的节点最终被选中的路径
 //					List<Integer> pathSel;//某对被选中的节点最终被选中的路径
 					entry=e;
+					
+//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
+					//放到这里不行，因为entry已经改变
 					
 					for(int j=0;j<3;j++) {
 						
@@ -150,12 +164,18 @@ public class Embedding {
 					
 					/*在这里就可以把映射结果加入到map里面啦*/
 //					emb.put(entryFirst.getKey(), firstSel);
+					
 					emb.put(entry.getKey(), lastSel);
+//					resOutput.printf("%d\t%d\r\n",entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
 					f[lastSel]=true;
+					resOutput.printf("%d\t%d\r\n%d\t%d\t",entry.getKey(),lastSel,entry.getKey(),lastSel);
 					
 				}
 				t++;		
 			}
+			
+			
+			resOutput.close();
 
 		}catch(Exception e){
 			System.out.println("Embedding__embedding():"+e);

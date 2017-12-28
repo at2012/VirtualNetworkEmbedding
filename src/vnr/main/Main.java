@@ -122,7 +122,7 @@ public class Main {
 				System.out.println("main_key_emborder"+entry.getKey());
 			}
 			result=Embedding.embedding(embOrder, g2, g);
-			System.out.println("还好阿");
+//			System.out.println("还好阿");
 			
 				
 			for(Map.Entry<Integer, Integer> entry:result.entrySet()){
