@@ -24,8 +24,8 @@ public class Floyd {
 //		for(int i)
 //		List<Integer> p=new LinkedList<Integer>();
 		
-		
-		
+//		Stack<Integer> path=new Stack<Integer>();
+//		path=x;
 		int[][] distance=new int[g.getNumOfNode()][g.getNumOfNode()];//用于存储整个图中每对节点之间的最短路径距离，初始时候二位数据的值是物理拓扑的边信息。
 //		Stack<Integer> stack=new Stack<Integer>	();//用于将路径倒序后加入path 的list
 		int[][] p=new int[g.getNumOfNode()][g.getNumOfNode()];//floyd算法中为了记录路径
@@ -84,17 +84,19 @@ public class Floyd {
 			System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
 			
 			System.out.println("floyd___路径映射结果：");
-			while(!path.isEmpty()) {
-				System.out.print(path.pop()+"->");
-			}
-			System.out.println();
-	
-			
+//			while(!path.isEmpty()) {
+//				System.out.print(path.pop()+"->");
+//			}
+//			System.out.println();
 		}catch(Exception e){
 			System.out.println("Floyd:---"+e);
 		}
 		return distance[s][d];	
 	}
+	
+	
+	
+	
 	
 
 

@@ -59,7 +59,9 @@ public class Embedding {
 //					int firsTemp;//用于临时存储第一个虚拟节点某次被选中的物理节点
 //					int lasTemp;//用于临时存储某个虚拟节点被临时选中的物理节点
 					
-					Stack<Integer> pathSel;//某对被选中的节点最终被选中的路径
+//					Stack<Integer> pathSel=null;//某对被选中的节点最终被选中的路径
+					
+					Stack<Integer> pathSel=new Stack<Integer>();//某对被选中的节点最终被选中的路径
 					
 					for(int j=0;j<3;j++){//这里限制了回退多少次
 //						List<Integer> pathTemp=new LinkedList<Integer>();//用于存储被临时选中的路径；
@@ -107,6 +109,14 @@ public class Embedding {
 						/*在路径映射中找到好的映射点*/
 //						System.out.println("第一次floyd");
 						int pathLengthTemp=Floyd.floyd(pn, firsTemp, lasTemp, pathTemp);
+						
+						System.out.println("test:"+pathTemp.empty());
+						
+//						while(pathTemp!=null) {
+////							resOutput.print(pathTemp.pop()+"\t");
+//							System.out.println("while:"+pathTemp.pop()+"\t");
+//						}
+						
 						if(pathLength>pathLengthTemp) {//如果新得到的路径长度小，那么就存储这个新的路径对应的起始终止节点，以及路径
 //							pathLength=Floyd.floyd(pn, firsTemp, lasTemp, pathTemp);//启发：这里由于调用了两次的floyd，所以pathTemp是被赋值两次的
 							pathLength=pathLengthTemp;
@@ -117,9 +127,15 @@ public class Embedding {
 					}
 					
 					/*在这里就可以把映射结果加入到map里面啦*/
+//					System.out.println("test222222:"+pathSel.empty());
 					emb.put(entryFirst.getKey(), firstSel);
 					emb.put(entry.getKey(), lastSel);
-					resOutput.printf("%d\t%d\t%d\t%d\r\n",entryFirst.getKey(),firstSel,entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
+					resOutput.printf("%d\t%d\t%d\t%d\t",entryFirst.getKey(),firstSel,entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
+					
+					while(!pathSel.empty()) {
+						resOutput.print(pathSel.pop()+"\t");
+					}
+					resOutput.println();
 					f[firstSel]=true;//物理节点被最终选定后，记得标记下，后面不再选择
 					f[lastSel]=true;
 					
@@ -130,8 +146,9 @@ public class Embedding {
 				}else {//对于除了前两个节点以外的其他节点的映射
 					
 //					List<Integer> pathTemp=new LinkedList<Integer>();//用于存储被临时选中的路径；
-					Stack<Integer> pathTemp=new Stack<Integer>();//用于存储被临时选中的路径；
-					Stack<Integer> pathSel;//某对被选中的节点最终被选中的路径
+//					Stack<Integer> pathTemp=new Stack<Integer>();//用于存储被临时选中的路径；
+					Stack<Integer> pathSel=new Stack<Integer>();//某对被选中的节点最终被选中的路径
+					int lastSelTemp=lastSel;
 //					List<Integer> pathSel;//某对被选中的节点最终被选中的路径
 					entry=e;
 					
@@ -139,7 +156,7 @@ public class Embedding {
 					//放到这里不行，因为entry已经改变
 					
 					for(int j=0;j<3;j++) {
-						
+						Stack<Integer> pathTemp=new Stack<Integer>();//用于存储被临时选中的路径；
 //						ArrayList<Double> sim=new ArrayList<Double>();//待改进：这里不好。这个数组肯定用不到这么大，++但是，每个i都有可能被记录，所以用这么大的数组是可以的。
 						Map<Integer,Double> sim=new HashMap<Integer,Double>();
 						for(int i=0;i<pn.getNumOfNode();i++){
@@ -153,7 +170,10 @@ public class Embedding {
 						lasTemp=ProbabilitySelected.proSelected(sim);
 						System.out.println("embedding____此次选中节点：___else:"+lasTemp);
 						/*在路径映射中找到好的映射点*/
-						int pathLengthTemp=Floyd.floyd(pn, lastSel, lasTemp, pathTemp);
+						int pathLengthTemp=Floyd.floyd(pn, lastSelTemp, lasTemp, pathTemp);
+//						int pathLengthTemp=Floyd.floyd(pn, lastSel, lasTemp, pathTemp);
+						//启发：不能在这里就把lastSel更改，因为后面往回回溯的时候是需要用到的！！！所以从下面改成了上面
+
 						if(pathLength>pathLengthTemp) {//如果新得到的路径长度小，那么就存储这个新的路径对应的起始终止节点，以及路径
 							pathLength=pathLengthTemp;
 							lastSel=lasTemp;
@@ -162,13 +182,23 @@ public class Embedding {
 					}
 					
 					
+					
 					/*在这里就可以把映射结果加入到map里面啦*/
 //					emb.put(entryFirst.getKey(), firstSel);
 					
 					emb.put(entry.getKey(), lastSel);
+					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
+
+					while(!pathSel.empty()) {
+						resOutput.print(pathSel.pop()+"\t");
+					}
+					resOutput.println();
 //					resOutput.printf("%d\t%d\r\n",entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
 					f[lastSel]=true;
-					resOutput.printf("%d\t%d\r\n%d\t%d\t",entry.getKey(),lastSel,entry.getKey(),lastSel);
+					
+//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
+
+					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
 					
 				}
 				t++;		
