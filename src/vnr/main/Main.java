@@ -1,7 +1,10 @@
 package vnr.main;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -24,10 +27,68 @@ public class Main {
 		int nodeNum=6,edgeNum=9;
 		int nodeNum2=3,edgeNum2=3;
 		
-
+		try {
+			BufferedReader br=new BufferedReader(new FileReader("case.txt"));
+			String line;
+			String regex=" ";
+			String[] lineContent;
+			List<String> lines=new LinkedList<String>();
+			
+			Edge[] edge=null;//启发：由于创建在另外的块中，所以在另外的块中使用的时候出现未被初始化的错误。所以在这里用的null，虽然知道在运行过程中可以被正确定义，但是还是担心----启发：后面处理拓扑图的时候用到edge，但是定义在try里面，
+			//所以不能用，错误同上一个启发。
+			Node[] node=null;
+			Graph g=null;//启发：之前edge\node\g的定义以及创建都被定义在了if里面，由于变量的定义在if块厘米，使用在else块里面，所以使用的时候报错：变量未被定义。所以把定义放在了这里，创建再放在if里面，应该么有问题了吧
+			
+			
+			
+			//网络映射相关变量：noderank
+			List<Map.Entry<Integer,Double>> rank=new ArrayList<Map.Entry<Integer,Double>>();//VNR
+			
+			
+			
+			
+			while((line=br.readLine())!=null) {
+				lines.add(line);
+			}
+			
+			for(int i=0;i<lines.size();i++) {
+				lineContent=lines.get(i).split(regex);
+				if(lineContent.length==2) {
+					nodeNum=Integer.parseInt(lineContent[0]);
+					edgeNum=Integer.parseInt(lineContent[1]);
+					
+					edge=new Edge[edgeNum];
+					node=new Node[nodeNum];
+					g=new Graph(nodeNum);
+					
+//					Graph g=new Graph(nodeNum);
+//					Edge[] edge=new Edge[edgeNum];
+//					Node[] node=new Node[nodeNum];
+				}else if(lineContent.length==3) {
+					edge[i-1]=new Edge(Integer.parseInt(lineContent[0]),Integer.parseInt(lineContent[1]),Integer.parseInt(lineContent[2]));
+					
+				}else {
+					node[i-1-edgeNum]=new Node(Integer.parseInt(lineContent[0]));
+				}	
+			}
+			
+			
+			CreateGraph.create(g, node, nodeNum, edge, edgeNum);
+			NodeRank nr=new NodeRank(g);
+			rank=nr.rank();
+			
+			for(int i=0;i<rank.size();i++) {
+				System.out.println("key:"+rank.get(i).getKey()+"-value:"+rank.get(i).getValue());
+				
+			}
+			
+			
+			
+			
+		}catch(Exception e) {
+			System.out.println("FROME MAIN:READ FILE");
+		}
 		
-//		double[] rank=new double[nodeNum];
-//		Map<Integer,Double> map=null;
 		
 		List<Map.Entry<Integer,Double>> rank=new ArrayList<Map.Entry<Integer,Double>>();
 		List<Map.Entry<Integer,Double>> rank2=new ArrayList<Map.Entry<Integer,Double>>();//VNR
@@ -54,7 +115,7 @@ public class Main {
 //				new Edge(4,5,5)
 //};
 //		
-//		
+		
 		Edge[] edge={
 				new Edge(0,1,1),
 				new Edge(0,2,1),
@@ -65,7 +126,7 @@ public class Main {
 				new Edge(2,4,1),
 				new Edge(3,5,1),
 				new Edge(4,5,1)};
-		
+//		
 		
 //		Edge[] edge={
 //				new Edge(0,1,6),
