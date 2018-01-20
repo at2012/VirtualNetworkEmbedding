@@ -74,16 +74,21 @@ public class Floyd {
 			}
 			
 			
-			int m;//m用作查找路径的中间值，
-			m=d;
-			path.push(d);
-			while(m!=s) {
-				m=p[s][m];
-				path.push(m);
+			if(path!=null) {
+				
+				int m;//m用作查找路径的中间值，
+				m=d;
+				path.push(d);
+				while(m!=s) {
+					m=p[s][m];
+					path.push(m);
+				}
+				System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
+				
+				System.out.println("floyd___路径映射结果：");
 			}
-			System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
 			
-			System.out.println("floyd___路径映射结果：");
+			
 //			while(!path.isEmpty()) {
 //				System.out.print(path.pop()+"->");
 //			}

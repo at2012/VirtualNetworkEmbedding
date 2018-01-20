@@ -52,7 +52,7 @@ public class NodeRank {
 		//对于每一个节点，计算自己在全局中的初始排名
 		for(int i=0;i<g.getNumOfNode();i++){
 //			init[i]=temp[i]/tolInit;
-			init[i]=(double)(Math.round(temp[i]/tolInit*10000))/10000;//节点初始排名值保留小数
+			init[i]=(double)(Math.round(temp[i]/tolInit*10000))/1000;//节点初始排名值保留小数
 //			System.out.println("init:"+init[i]);
 		}
 		for(int i=0;i<n;i++){
@@ -62,9 +62,9 @@ public class NodeRank {
 		
 		
 		/*循环计算节点的最终排名*/
-		int z=35;//排名计算的循环次数
+		int z=5;//排名计算的循环次数
 		while(z>0){
-			for(int i=0;i<n;i++){//修改：这里很多的地方用到节点数量，可以考虑增加一个变量
+			for(int i=0;i<n;i++){
 				map.put(i, 0.6*cpuPro[i]);
 //				rank[i]=0.6*cpuPro[i];
 				for(int j=0;j<n;j++){
@@ -97,7 +97,10 @@ public class NodeRank {
 /**计算两个节点间影响。*/
 	public double nov(int m,int n)throws Exception{
 //		double novM=0;
-		int dis=Dijskra.dijskra(g, m, n);
+//		int dis=Dijskra.dijskra(g, m, n);
+		
+		int dis=Floyd.floyd(g, m, n, null);
+		
 		return (double)g.getCpu(m)*g.getCpu(n)/(double)(dis*dis)*0.01;//这里乘的0.01是在把代码初步实现运行之后，发现结果不理想，挨个排查发现，这一步的值到后来很容易变得特别特别大，不好收敛，于是，用0.01进行修正，让他能收敛
 	} 
 /**全局其他节点对某个节点的综合影响*/

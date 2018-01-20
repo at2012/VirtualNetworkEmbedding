@@ -24,11 +24,12 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		int nodeNum=6,edgeNum=9;
+		int nodeNum=-1,edgeNum=-1;
+		int nodeNumx=6,edgeNumx=9;
 		int nodeNum2=3,edgeNum2=3;
 		
 		try {
-			BufferedReader br=new BufferedReader(new FileReader("case.txt"));
+			BufferedReader br=new BufferedReader(new FileReader("physical_topo.txt"));
 			String line;
 			String regex=" ";
 			String[] lineContent;
@@ -43,8 +44,6 @@ public class Main {
 			
 			//网络映射相关变量：noderank
 			List<Map.Entry<Integer,Double>> rank=new ArrayList<Map.Entry<Integer,Double>>();//VNR
-			
-			
 			
 			
 			while((line=br.readLine())!=null) {
@@ -86,7 +85,7 @@ public class Main {
 			
 			
 		}catch(Exception e) {
-			System.out.println("FROME MAIN:READ FILE");
+			System.out.println("FROME MAIN"+e);
 		}
 		
 		
@@ -149,7 +148,7 @@ public class Main {
 				new Edge(1,2,1)};
 		Graph g2=new Graph(nodeNum2);
 		
-		CreateGraph.create(g, node, nodeNum, edge, edgeNum);
+		CreateGraph.create(g, node, nodeNumx, edge, edgeNumx);
 		CreateGraph.create(g2, node2, nodeNum2, edge2, edgeNum2);
 		
 		NodeRank nr=new NodeRank(g);
