@@ -44,17 +44,12 @@ public class Dijskra {
 				s[temp]=true;
 				
 				for(int j=0;j<n;j++){
-//					if(!s[j] && distance[j]>distance[temp]+g.getWeight(temp, j) && g.getWeight(temp, j)<maxWeight)//在把一个点入了已经访问过之后，更新所有的距离
-//						System.out.println("test:"+s[j]);
 					if(!s[j] && g.getWeight(temp, j)<maxWeight){
 						if(distance[j]>distance[temp]+g.getWeight(temp, j))
 							distance[j]=distance[temp]+g.getWeight(temp, j);
 					}
 				}
-
-				
 			}
-			
 			return distance[w];	
 		}
 		
@@ -79,41 +74,30 @@ public class Dijskra {
 			System.out.println("path测试，1，:"+path.get(path.size()-1));
 			s[v]=true;
 			
-while(true){
-//if(!s[w]){
-
-			for(int i=1;i<n;i++){
-				int min=maxWeight;//启发：这个min被赋值的位置，妈的，浪费了好几个小时，之前也因为这种值得赋值位置被影响过！！！！切记切记
-				for(int j=0;j<n;j++){
-					if(distance[j]<min && !s[j]){
-						temp=j;
-						min=distance[j];
-					}
-				}
-				
-				s[temp]=true;
-//				path.add(temp);
-//				System.out.println("path测试"+path.get(path.size()-1));
-				for(int j=0;j<n;j++){
-//					if(!s[j] && distance[j]>distance[temp]+g.getWeight(temp, j) && g.getWeight(temp, j)<maxWeight)//在把一个点入了已经访问过之后，更新所有的距离
-//						System.out.println("test:"+s[j]);
-					if(!s[j] && g.getWeight(temp, j)<maxWeight){//判断是否是未被访问过的邻居
-						if(distance[j]>distance[temp]+g.getWeight(temp, j)){
-							distance[j]=distance[temp]+g.getWeight(temp, j);
-							path.add(temp);
-							System.out.println("path测试"+path.get(path.size()-1));
+			while(true){
+			
+						for(int i=1;i<n;i++){
+							int min=maxWeight;//启发：这个min被赋值的位置，妈的，浪费了好几个小时，之前也因为这种值得赋值位置被影响过！！！！切记切记
+							for(int j=0;j<n;j++){
+								if(distance[j]<min && !s[j]){
+									temp=j;
+									min=distance[j];
+								}
+							}
+							
+							s[temp]=true;
+							for(int j=0;j<n;j++){
+								if(!s[j] && g.getWeight(temp, j)<maxWeight){//判断是否是未被访问过的邻居
+									if(distance[j]>distance[temp]+g.getWeight(temp, j)){
+										distance[j]=distance[temp]+g.getWeight(temp, j);
+										path.add(temp);
+										System.out.println("path测试"+path.get(path.size()-1));
+									}
+								}
+							}
 						}
-					}
-				}
-
-				
+				return path;
 			}
 			
-
-	return path;
-}
-			
 		}
-
-
 }

@@ -7,14 +7,10 @@ public class ProbabilitySelected {
 	/**
 	 * 作用：以相似度比例为权重，概率选择某个对应节点
 	 * 参数：待映射节点与各个节点相似度数组*/
-//	public static int proSelected(double[] sim){
-//	public static int proSelected(ArrayList<Double> sim){
 	public static int proSelected(Map<Integer,Double> sim) {
 	
 		double tol=0;
-//		int re=sim.length;
 		int re=-1;
-//		double[] temp=new double[re];
 		Map<Integer,Double> temp=new HashMap<Integer,Double>();
 		/*遍历sim的value，并求和
 		 */
@@ -26,7 +22,6 @@ public class ProbabilitySelected {
 		 * 遍历sim，分别计算每一个被选中的概率，并存入map
 		 */
 		for(Map.Entry<Integer, Double> entry:sim.entrySet()) {
-//			System.out.println(x);
 			temp.put(entry.getKey(), entry.getValue()/tol);
 		}
 //		for(Map.Entry<Integer, Double> entry:temp.entrySet()) {

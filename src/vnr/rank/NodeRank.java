@@ -13,7 +13,6 @@ import vnr.graph.Graph;
 public class NodeRank {
 	
 	public Graph g;//启发：定义一个静态变量，在打算用这个类下面的方法的时候，先给g赋值，然后在调用方法。这样比pagerank工程里面的每个方法都传递一遍g要更好，节省空间。但是有个问题是，当要对多个图的rank的时候，需要考虑g的值是要跟着变的。
-//	public Graph graph;
 	//返回一个map
 	public NodeRank(Graph g){
 		this.g=g;
@@ -37,7 +36,6 @@ public class NodeRank {
 		
 		Map<Integer,Double> map=new HashMap<Integer,Double>();//节点的排名值，key-value分别是：节点在图中下标，节点的当前排名值
 		
-		
 		for(int i=0;i<n;i++){
 			tolCpu+=g.getCpu(i);
 		}
@@ -51,9 +49,7 @@ public class NodeRank {
 		
 		//对于每一个节点，计算自己在全局中的初始排名
 		for(int i=0;i<g.getNumOfNode();i++){
-//			init[i]=temp[i]/tolInit;
 			init[i]=(double)(Math.round(temp[i]/tolInit*10000))/1000;//节点初始排名值保留小数
-//			System.out.println("init:"+init[i]);
 		}
 		for(int i=0;i<n;i++){
 			map.put(i, init[i]);
@@ -66,12 +62,10 @@ public class NodeRank {
 		while(z>0){
 			for(int i=0;i<n;i++){
 				map.put(i, 0.6*cpuPro[i]);
-//				rank[i]=0.6*cpuPro[i];
 				for(int j=0;j<n;j++){
 					if(i!=j){
 						double t=map.get(i);
 						map.put(i, t+0.4*nov(i,j)*map.get(j));
-//						rank[i]+=0.4*nov(i,j)*rank[j];
 					}
 				}
 			}
@@ -83,24 +77,14 @@ public class NodeRank {
 		
 		/*把排名结果按照顺序存入list？？？？？？？？？？？？？*/
 		ArrayList<Map.Entry<Integer,Double>> entries=sortMap(map);
-		//test
-//		for(int i=0;i<g.getNumOfNode();i++){
-//			System.out.println("Node"+entries.get(i).getKey()+":"+entries.get(i).getValue());
-//		}
 		for(int i=0;i<g.getNumOfNode();i++){
 			map.put(entries.get(i).getKey(), entries.get(i).getValue());//这个语句，把list又转换成了map，参考下下面被注释掉的一个输出，便于理解。。。。经过测试，这个是不行的。
-//			System.out.println("Node"+entries.get(i).getKey()+":"+entries.get(i).getValue());
 		}
-//		Arrays.sort(rank);//这里对rank进行下sort，便于后续用，注意：sort之后，节点下标和排名值之间没有了对应关系，所以存储下标是不行的。
 		return entries;
 	}
 /**计算两个节点间影响。*/
 	public double nov(int m,int n)throws Exception{
-//		double novM=0;
-//		int dis=Dijskra.dijskra(g, m, n);
-		
 		int dis=Floyd.floyd(g, m, n, null);
-		
 		return (double)g.getCpu(m)*g.getCpu(n)/(double)(dis*dis)*0.01;//这里乘的0.01是在把代码初步实现运行之后，发现结果不理想，挨个排查发现，这一步的值到后来很容易变得特别特别大，不好收敛，于是，用0.01进行修正，让他能收敛
 	} 
 /**全局其他节点对某个节点的综合影响*/
@@ -119,13 +103,10 @@ public class NodeRank {
 	 *启发，这里考虑下要不要把开始的时候节点就存储在map里面
 	 *对map进行降序排序*/
 	public static ArrayList<Map.Entry<Integer,Double>> sortMap(Map<Integer,Double> map){
-//		ArrayList re=new ArrayList();
 		List<Map.Entry<Integer,Double>> entries =new ArrayList<Map.Entry<Integer,Double>>(map.entrySet());
-		
 		
 		Collections.sort(entries,new Comparator<Map.Entry<Integer,Double>>(){
 			public int compare(Map.Entry<Integer, Double> obj1,Map.Entry<Integer, Double> obj2){
-//				return (int)(obj2.getValue()-obj1.getValue());
 				if(obj1.getValue()>obj2.getValue())
 					return -1;
 				else if(obj1.getValue()==obj2.getValue())
@@ -136,5 +117,4 @@ public class NodeRank {
 		});
 		return (ArrayList<Entry<Integer,Double>>) entries;
 	}
-
 }

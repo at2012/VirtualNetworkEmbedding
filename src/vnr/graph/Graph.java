@@ -37,20 +37,16 @@ public class Graph {
 	public int getNumOfEdge(){
 		return numOfEdge;
 	}
+	//这似乎是一个没有被使用的方法
 	public Object getValue(int n)throws Exception{
-//		Node temp=nodeList.get(n);
 		return nodeList.get(n);
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!注意这里的get方法，现在不知道有啥作用
-		//后来发现，是get图中，某个节点的 值
 	}
 	public int getMax() {
 		return maxWeight;
 	}
 	
 	public int getCpu(int n)throws Exception{
-//		Node temp=nodeList.get(n);
 		return nodeList.get(n).getCpu();
-		//后来发现，是get图中，某个节点的 值
 	}
 	public int getDegree(int n){//得到网络中指定下标的节点的节点度，疑惑：不知道为啥，总感觉没有特别大的必要去添加这么 一个方法。
 		return nodeList.get(n).getDegree();
@@ -76,9 +72,6 @@ public class Graph {
 	
 	
 	//成员方法
-//	public void insertNode(Object node){
-//		nodeList.add(nodeList.size(),node);
-//	}
 	public void insertNode(Node node){//启发：在说明了list元素的类型后，上面的方法就报错了，思考下为什么
 		nodeList.add(nodeList.size(),node);
 	}
@@ -132,10 +125,4 @@ public class Graph {
 		}
 		return -1;
 	}
-	
-	
-	
-	
-	
-
 }

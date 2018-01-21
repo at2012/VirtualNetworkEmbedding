@@ -10,9 +10,6 @@ public class CreateGraph {
 			
 			node[e[i].getX()].addDegree();//插入边之后，节点的degree增加
 			node[e[i].getY()].addDegree();
-		
-			
-//			e[i].getX().addEdge();
 		}
 				
 	}

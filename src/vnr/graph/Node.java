@@ -16,11 +16,6 @@ public class Node {
 		degree++;
 	}
 	
-//	public void setDegree(int n){
-//		this.degree=n;
-//	}
-//	
-	
 	public Node(int c){//在还未完善节点建模的时候可以这么用
 		cpu=c;
 	}

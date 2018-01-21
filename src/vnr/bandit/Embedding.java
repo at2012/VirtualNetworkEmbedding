@@ -19,9 +19,7 @@ public class Embedding {
 	 * pn把物理网络拓扑图传递给方法<p>
 	 * linkedhashmap用于存储链路映射结果<p>*/
 	public static LinkedHashMap<Integer,Integer> embedding(LinkedHashMap<Integer,Double> embOrder,Graph vn,Graph pn){//n
-		//,LinkedHashMap<Edge,List<Integer>> linkMap
 		LinkedHashMap<Integer,Integer> emb=new LinkedHashMap<Integer,Integer>();//用于存储最终的映射结果,用于返回结果
-//		double[] sim=new double[pn.getNumOfNode()];//待改进：这里不好。这个数组肯定用不到这么大，
 		boolean[] f=new boolean[pn.getNumOfNode()];//用于标志这个节点有没有被当前虚拟网络映射过
 		int s;//用于存储被选中的节点的下标，因为是随机产生的，所以多次调用方法
 		
@@ -31,7 +29,6 @@ public class Embedding {
 			
 			BufferedWriter resOut = new BufferedWriter(new FileWriter("embed.txt"));
 			
-//			PrintWriter resOutput=new PrintWriter(resFile);			
 			
 			/*映射第一个和第二个节点，随即选择三次后选择最好的*/
 			System.out.println("Embedding__开始映射节点");
@@ -44,10 +41,8 @@ public class Embedding {
 			Map.Entry<Integer, Double> entry;
 			for(Map.Entry<Integer, Double>e:embOrder.entrySet()) {//这里涉及遍历map，还有别的办法的。
 				int firstSel=pn.getNumOfNode();//用于存储第一个VNR节点对应的物理节点,这样赋初始值都可以检验是不是没有正确赋值
-//				List<Integer> pathSel;//某对被选中的节点最终被选中的路径,这个变量要放到if里面去定义，因为每次都有新值
 				int pathLength=pn.getMax();//用于存储对应的物理路径的长度
 				
-//				boolean[] fTemp=new boolean[pn.getNumOfNode()];//用于标志这个节点在回退过程中，有么有被映射过
 				int firsTemp;//用于临时存储第一个虚拟节点某次被选中的物理节点
 				int lasTemp;//用于临时存储某个虚拟节点被临时选中的物理节点
 				//启发：上面两个temp变量是从下面if里面弄上来的，也不知道哪个好，但是那个pathTemp我不敢弄上来，怕前面的值会影响后面
@@ -59,11 +54,6 @@ public class Embedding {
 					entryFirst=e;
 				}else if(t==1) {//对于第二个待映射节点，，第一对（即前两个节点）是需要特殊处理的。
 					entry=e;
-//					int firsTemp;//用于临时存储第一个虚拟节点某次被选中的物理节点
-//					int lasTemp;//用于临时存储某个虚拟节点被临时选中的物理节点
-					
-//					Stack<Integer> pathSel=null;//某对被选中的节点最终被选中的路径
-					
 					Stack<Integer> pathSel=new Stack<Integer>();//某对被选中的节点最终被选中的路径
 					
 					for(int j=0;j<3;j++){//这里限制了回退多少次
@@ -71,20 +61,12 @@ public class Embedding {
 						Stack<Integer> pathTemp=new Stack<Integer>();//用于存储被临时选中的路径；
 						boolean[] fTemp=new boolean[pn.getNumOfNode()];//用于标志这个节点在回退过程中，有么有被映射过,启发，这个是从外面调过来的，因为每次回退过程都要保证他是空的，没有被赋值过的。
 						{						
-//							double[] sim=new double[pn.getNumOfNode()];//待改进：这里不好。这个数组肯定用不到这么大，++但是，每个i都有可能被记录，所以用这么大的数组是可以的。
-							//nonono，不能这样存储，这样sim数组的长度不是所有满足要求的物理节点的相似度在proselect里面用的数组长度的时候是会出错的。
-//							ArrayList<Double> sim=new ArrayList<Double>();
 							Map<Integer,Double> sim=new HashMap<Integer,Double>();
 							for(int i=0;i<pn.getNumOfNode();i++){
 								if(!f[i] && pn.getCpu(i)>=vn.getCpu(entryFirst.getKey())){//物理网络节点cpu大于VNR节点cpu
-//									System.out.println("embedding__new__待映射点1与物理节点中满足要求的节点"+i+"的相似度:"+Similarity.cos(vn.getNode(entryFirst.getKey()),pn.getNode(i)));
-//									sim[i]=Similarity.cos(vn.getNode(entryFirst.getKey()),pn.getNode(i));
-//									sim.add(Similarity.cos(vn.getNode(entryFirst.getKey()),pn.getNode(i)));
 									sim.put(i, Similarity.cos(vn.getNode(entryFirst.getKey()),pn.getNode(i)));
-									//					g.getCpu(i)>g.getCpu(entryFirst.getKey()))
 								}
 							}
-//							sim=simTemp.toArray(new double[simTemp.size()]);
 							firsTemp=ProbabilitySelected.proSelected(sim);
 							fTemp[firsTemp]=true;
 							System.out.println("embedding___此次选中节点"+firsTemp);
@@ -100,25 +82,16 @@ public class Embedding {
 							Map<Integer,Double> sim=new HashMap<Integer,Double>();
 							for(int i=0;i<pn.getNumOfNode();i++){
 								if(!fTemp[i] && !f[i] && pn.getCpu(i)>=vn.getCpu(entry.getKey())){//物理网络节点cpu大于VNR节点cpu
-//									System.out.println("embedding__new__待映射点2与物理节点中满足要求的节点"+i+"的相似度:"+Similarity.cos(vn.getNode(entry.getKey()),pn.getNode(i)));
-//									sim.add(Similarity.cos(vn.getNode(entryFirst.getKey()),pn.getNode(i)));
 									sim.put(i, Similarity.cos(vn.getNode(entry.getKey()),pn.getNode(i)));
-									//					g.getCpu(i)>g.getCpu(entry.getKey()))
 								}
 							}
 							lasTemp=ProbabilitySelected.proSelected(sim);
 							System.out.println("embedding__此次选中节点："+lasTemp);
 						}
 						/*在路径映射中找到好的映射点*/
-//						System.out.println("第一次floyd");
 						int pathLengthTemp=Floyd.floyd(pn, firsTemp, lasTemp, pathTemp);
 						
 						System.out.println("test:"+pathTemp.empty());
-						
-//						while(pathTemp!=null) {
-////							resOutput.print(pathTemp.pop()+"\t");
-//							System.out.println("while:"+pathTemp.pop()+"\t");
-//						}
 						
 						if(pathLength>pathLengthTemp) {//如果新得到的路径长度小，那么就存储这个新的路径对应的起始终止节点，以及路径
 //							pathLength=Floyd.floyd(pn, firsTemp, lasTemp, pathTemp);//启发：这里由于调用了两次的floyd，所以pathTemp是被赋值两次的
@@ -133,53 +106,40 @@ public class Embedding {
 //					System.out.println("test222222:"+pathSel.empty());
 					emb.put(entryFirst.getKey(), firstSel);
 					emb.put(entry.getKey(), lastSel);
-//					resOutput.printf("%d\t%d\t%d\t%d\t",entryFirst.getKey(),firstSel,entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
 					resOut.write(entryFirst.getKey()+" "+firstSel+" "+entry.getKey()+" "+lastSel+" ");//把映射结果写入文本，作用 类似上面两句
 					
 					while(!pathSel.empty()) {
-//						resOutput.print(pathSel.pop()+"\t");
 						resOut.write(pathSel.pop()+" ");;
 						
 						
 					}
 					resOut.write("\r\n");
-//					resOutput.println();
 					f[firstSel]=true;//物理节点被最终选定后，记得标记下，后面不再选择
 					f[lastSel]=true;
 					
 					resOut.write(entry.getKey()+" "+lastSel+" ");
-//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
 					
 					System.out.println("embedding___最终映射结果__前两个节点"+firstSel+"--"+lastSel);
 				}else {//对于除了前两个节点以外的其他节点的映射
 					
-//					List<Integer> pathTemp=new LinkedList<Integer>();//用于存储被临时选中的路径；
-//					Stack<Integer> pathTemp=new Stack<Integer>();//用于存储被临时选中的路径；
 					Stack<Integer> pathSel=new Stack<Integer>();//某对被选中的节点最终被选中的路径
 					int lastSelTemp=lastSel;
-//					List<Integer> pathSel;//某对被选中的节点最终被选中的路径
 					entry=e;
 					
-//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
 					//放到这里不行，因为entry已经改变
 					
 					for(int j=0;j<3;j++) {
 						Stack<Integer> pathTemp=new Stack<Integer>();//用于存储被临时选中的路径；
-//						ArrayList<Double> sim=new ArrayList<Double>();//待改进：这里不好。这个数组肯定用不到这么大，++但是，每个i都有可能被记录，所以用这么大的数组是可以的。
 						Map<Integer,Double> sim=new HashMap<Integer,Double>();
 						for(int i=0;i<pn.getNumOfNode();i++){
 							if(!f[i] && pn.getCpu(i)>=vn.getCpu(entry.getKey())){//物理网络节点cpu大于VNR节点cpu
-//								System.out.println("embedding__new__待映射点2与物理节点中满足要求的节点"+i+"的相似度:"+Similarity.cos(vn.getNode(entry.getKey()),pn.getNode(i)));
-//								sim.add(Similarity.cos(vn.getNode(entryFirst.getKey()),pn.getNode(i)));
 								sim.put(i, Similarity.cos(vn.getNode(entryFirst.getKey()),pn.getNode(i)));
-								//					g.getCpu(i)>g.getCpu(entry.getKey()))
 							}
 						}
 						lasTemp=ProbabilitySelected.proSelected(sim);
 						System.out.println("embedding____此次选中节点：___else:"+lasTemp);
 						/*在路径映射中找到好的映射点*/
 						int pathLengthTemp=Floyd.floyd(pn, lastSelTemp, lasTemp, pathTemp);
-//						int pathLengthTemp=Floyd.floyd(pn, lastSel, lasTemp, pathTemp);
 						//启发：不能在这里就把lastSel更改，因为后面往回回溯的时候是需要用到的！！！所以从下面改成了上面
 
 						if(pathLength>pathLengthTemp) {//如果新得到的路径长度小，那么就存储这个新的路径对应的起始终止节点，以及路径
@@ -192,24 +152,16 @@ public class Embedding {
 					
 					
 					/*在这里就可以把映射结果加入到map里面啦*/
-//					emb.put(entryFirst.getKey(), firstSel);
 					
 					emb.put(entry.getKey(), lastSel);
 					resOut.write(entry.getKey()+" "+lastSel+" ");
-//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
 
 					while(!pathSel.empty()) {
 						resOut.write(pathSel.pop()+" ");
-//						resOutput.print(pathSel.pop()+"\t");
 					}
 					resOut.write("\r\n");
-//					resOutput.println();
-//					resOutput.printf("%d\t%d\r\n",entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
 					f[lastSel]=true;
 					
-//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
-
-//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
 					resOut.write(entry.getKey()+" "+lastSel+" ");
 					
 				}
@@ -217,7 +169,6 @@ public class Embedding {
 			}
 			
 			resOut.close();
-//			resOutput.close();
 
 		}catch(Exception e){
 			System.out.println("Embedding__embedding():"+e);

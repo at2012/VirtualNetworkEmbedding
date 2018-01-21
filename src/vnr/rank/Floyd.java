@@ -10,7 +10,7 @@ public class Floyd {
 	 * 作用：计算两个节点之间的最短路径<p>
 	 * 参数：起始、终止节点下标,节点所在图，<p>
 	 * 返回类型：路径list*/
-//	public static List<Integer> floyd(Graph g,int s,int d,int[][] distance){
+
 	/**
 	 * @author Jing
 	 * @param g 待求最短路径的图
@@ -18,24 +18,13 @@ public class Floyd {
 	 * @param d 路径的目的节点
 	 * @param path 起始终止节点之间的路径（用于将结果带出方法）
 	 * @return 路径长度*/
-//	public static int floyd(Graph g,int s,int d,List<Integer> path){
 	public static int floyd(Graph g,int s,int d,Stack<Integer> path) {
-		
-//		for(int i)
-//		List<Integer> p=new LinkedList<Integer>();
-		
-//		Stack<Integer> path=new Stack<Integer>();
-//		path=x;
 		int[][] distance=new int[g.getNumOfNode()][g.getNumOfNode()];//用于存储整个图中每对节点之间的最短路径距离，初始时候二位数据的值是物理拓扑的边信息。
-//		Stack<Integer> stack=new Stack<Integer>	();//用于将路径倒序后加入path 的list
 		int[][] p=new int[g.getNumOfNode()][g.getNumOfNode()];//floyd算法中为了记录路径
 		
 		int n=g.getNumOfNode();
-//		int[][] distance=new int[g.getNumOfNode()][g.getNumOfNode()];
-
-//		int temp=0;
-		//初始化，到v的距离，直接相连的是值，自己是0，没有的事weight，直接getweight就成，注意把所有的标记为未被访问，
 		
+		//初始化，到v的距离，直接相连的是值，自己是0，没有的事weight，直接getweight就成，注意把所有的标记为未被访问，
 		try{
 			/*
 			 * 初始化distance
@@ -45,7 +34,6 @@ public class Floyd {
 					distance[i][j]=g.getWeight(i, j);
 				}
 			}
-			
 			
 			/*
 			 * 初始化path			
@@ -64,7 +52,6 @@ public class Floyd {
 			for(int k=0;k<n;k++){
 				for(int i=0;i<n;i++){
 					for(int j=0;j<n;j++){
-//						if(!(distance[i][k]==maxWeight || distance[k][j]==maxWeight) && distance[i][j]>distance[i][k]+distance[k][j] && i!=j){
 						if(distance[i][j]>distance[i][k]+distance[k][j]) {
 							distance[i][j]=distance[i][k]+distance[k][j];
 							p[i][j]=p[k][j];
@@ -73,9 +60,7 @@ public class Floyd {
 				}
 			}
 			
-			
 			if(path!=null) {
-				
 				int m;//m用作查找路径的中间值，
 				m=d;
 				path.push(d);
@@ -84,25 +69,12 @@ public class Floyd {
 					path.push(m);
 				}
 				System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
-				
 				System.out.println("floyd___路径映射结果：");
 			}
 			
-			
-//			while(!path.isEmpty()) {
-//				System.out.print(path.pop()+"->");
-//			}
-//			System.out.println();
 		}catch(Exception e){
 			System.out.println("Floyd:---"+e);
 		}
 		return distance[s][d];	
 	}
-	
-	
-	
-	
-	
-
-
 }

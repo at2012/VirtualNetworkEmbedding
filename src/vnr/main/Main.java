@@ -62,10 +62,6 @@ public class Main {
 					edgePhy=new Edge[edgeNum];
 					nodePhy=new Node[nodeNum];
 					gPhy=new Graph(nodeNum);
-					
-//					Graph g=new Graph(nodeNum);
-//					Edge[] edge=new Edge[edgeNum];
-//					Node[] node=new Node[nodeNum];
 				}else if(lineContent.length==3) {
 					edgePhy[i-1]=new Edge(Integer.parseInt(lineContent[0]),Integer.parseInt(lineContent[1]),Integer.parseInt(lineContent[2]));
 					
@@ -74,12 +70,6 @@ public class Main {
 				}	
 			}
 			CreateGraph.create(gPhy, nodePhy, nodeNum, edgePhy, edgeNum);
-//			NodeRank nr=new NodeRank(g);
-//			rank=nr.rank();
-//			for(int i=0;i<rank.size();i++) {
-//				System.out.println("key:"+rank.get(i).getKey()+"-value:"+rank.get(i).getValue());
-//				
-//			}
 			/*ÐéÄâÍøÂçtopo´¦Àí*/
 			Edge[] edgeVir={
 					new Edge(0,1,6),
