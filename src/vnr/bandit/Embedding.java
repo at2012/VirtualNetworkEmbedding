@@ -1,7 +1,8 @@
 package vnr.bandit;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.PrintWriter;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,7 +29,9 @@ public class Embedding {
 		File resFile =new File("result.txt");
 		try{
 			
-			PrintWriter resOutput=new PrintWriter(resFile);			
+			BufferedWriter resOut = new BufferedWriter(new FileWriter("embed.txt"));
+			
+//			PrintWriter resOutput=new PrintWriter(resFile);			
 			
 			/*映射第一个和第二个节点，随即选择三次后选择最好的*/
 			System.out.println("Embedding__开始映射节点");
@@ -130,17 +133,22 @@ public class Embedding {
 //					System.out.println("test222222:"+pathSel.empty());
 					emb.put(entryFirst.getKey(), firstSel);
 					emb.put(entry.getKey(), lastSel);
-					resOutput.printf("%d\t%d\t%d\t%d\t",entryFirst.getKey(),firstSel,entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
+//					resOutput.printf("%d\t%d\t%d\t%d\t",entryFirst.getKey(),firstSel,entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
+					resOut.write(entryFirst.getKey()+" "+firstSel+" "+entry.getKey()+" "+lastSel+" ");//把映射结果写入文本，作用 类似上面两句
 					
 					while(!pathSel.empty()) {
-						resOutput.print(pathSel.pop()+"\t");
+//						resOutput.print(pathSel.pop()+"\t");
+						resOut.write(pathSel.pop()+" ");;
+						
+						
 					}
-					resOutput.println();
+					resOut.write("\r\n");
+//					resOutput.println();
 					f[firstSel]=true;//物理节点被最终选定后，记得标记下，后面不再选择
 					f[lastSel]=true;
 					
-					
-					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
+					resOut.write(entry.getKey()+" "+lastSel+" ");
+//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
 					
 					System.out.println("embedding___最终映射结果__前两个节点"+firstSel+"--"+lastSel);
 				}else {//对于除了前两个节点以外的其他节点的映射
@@ -187,25 +195,29 @@ public class Embedding {
 //					emb.put(entryFirst.getKey(), firstSel);
 					
 					emb.put(entry.getKey(), lastSel);
-					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
+					resOut.write(entry.getKey()+" "+lastSel+" ");
+//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
 
 					while(!pathSel.empty()) {
-						resOutput.print(pathSel.pop()+"\t");
+						resOut.write(pathSel.pop()+" ");
+//						resOutput.print(pathSel.pop()+"\t");
 					}
-					resOutput.println();
+					resOut.write("\r\n");
+//					resOutput.println();
 //					resOutput.printf("%d\t%d\r\n",entry.getKey(),lastSel);//把映射结果写入文本，作用 类似上面两句
 					f[lastSel]=true;
 					
 //					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
 
-					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
+//					resOutput.printf("%d\t%d\t",entry.getKey(),lastSel);
+					resOut.write(entry.getKey()+" "+lastSel+" ");
 					
 				}
 				t++;		
 			}
 			
-			
-			resOutput.close();
+			resOut.close();
+//			resOutput.close();
 
 		}catch(Exception e){
 			System.out.println("Embedding__embedding():"+e);
