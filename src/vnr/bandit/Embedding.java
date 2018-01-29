@@ -1,7 +1,6 @@
 package vnr.bandit;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,12 +22,11 @@ public class Embedding {
 		boolean[] f=new boolean[pn.getNumOfNode()];//用于标志这个节点有没有被当前虚拟网络映射过
 		int s;//用于存储被选中的节点的下标，因为是随机产生的，所以多次调用方法
 		
-		
-		File resFile =new File("result.txt");
+
+//		File resFile =new File("result.txt");
 		try{
 			
 			BufferedWriter resOut = new BufferedWriter(new FileWriter("embed.txt"));
-			
 			
 			/*映射第一个和第二个节点，随即选择三次后选择最好的*/
 			System.out.println("Embedding__开始映射节点");
@@ -47,9 +45,7 @@ public class Embedding {
 				int lasTemp;//用于临时存储某个虚拟节点被临时选中的物理节点
 				//启发：上面两个temp变量是从下面if里面弄上来的，也不知道哪个好，但是那个pathTemp我不敢弄上来，怕前面的值会影响后面
 				
-				
-				
-				
+								
 				if(t==0) {//对于第一个待映射节点
 					entryFirst=e;
 				}else if(t==1) {//对于第二个待映射节点，，第一对（即前两个节点）是需要特殊处理的。
@@ -109,9 +105,7 @@ public class Embedding {
 					resOut.write(entryFirst.getKey()+" "+firstSel+" "+entry.getKey()+" "+lastSel+" ");//把映射结果写入文本，作用 类似上面两句
 					
 					while(!pathSel.empty()) {
-						resOut.write(pathSel.pop()+" ");;
-						
-						
+						resOut.write(pathSel.pop()+" ");
 					}
 					resOut.write("\r\n");
 					f[firstSel]=true;//物理节点被最终选定后，记得标记下，后面不再选择
@@ -148,7 +142,6 @@ public class Embedding {
 							pathSel=pathTemp;
 						}
 					}
-					
 					
 					
 					/*在这里就可以把映射结果加入到map里面啦*/
