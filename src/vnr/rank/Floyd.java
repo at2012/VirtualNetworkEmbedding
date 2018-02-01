@@ -1,6 +1,5 @@
 package vnr.rank;
 
-import java.util.List;
 import java.util.Stack;
 
 import vnr.graph.Graph;
@@ -31,7 +30,18 @@ public class Floyd {
 			 */
 			for(int i=0;i<n;i++) {
 				for(int j=0;j<n;j++) {
-					distance[i][j]=g.getWeight(i, j);
+//					distance[i][j]=g.getWeight(i, j);
+					if(i!=j) {
+						if(g.getWeight(i, j)!=g.getMax()) {
+							distance[i][j]=1;
+						}else {
+							distance[i][j]=g.getMax();
+						}
+						
+					}else {
+						distance[i][j]=0;					
+					}
+					
 				}
 			}
 			
@@ -47,7 +57,6 @@ public class Floyd {
 					}
 				}
 			}
-			
 			
 			for(int k=0;k<n;k++){
 				for(int i=0;i<n;i++){
@@ -68,7 +77,7 @@ public class Floyd {
 					m=p[s][m];
 					path.push(m);
 				}
-				System.out.println("floyd里面的计算的路径长度"+distance[s][d]);
+				System.out.println("floyd--路径长度"+distance[s][d]);
 				System.out.println("floyd___路径映射结果：");
 			}
 			

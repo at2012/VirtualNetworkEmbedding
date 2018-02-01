@@ -87,8 +87,6 @@ public class Embedding {
 						/*在路径映射中找到好的映射点*/
 						int pathLengthTemp=Floyd.floyd(pn, firsTemp, lasTemp, pathTemp);
 						
-						System.out.println("test:"+pathTemp.empty());
-						
 						if(pathLength>pathLengthTemp) {//如果新得到的路径长度小，那么就存储这个新的路径对应的起始终止节点，以及路径
 //							pathLength=Floyd.floyd(pn, firsTemp, lasTemp, pathTemp);//启发：这里由于调用了两次的floyd，所以pathTemp是被赋值两次的
 							pathLength=pathLengthTemp;
@@ -102,16 +100,18 @@ public class Embedding {
 //					System.out.println("test222222:"+pathSel.empty());
 					emb.put(entryFirst.getKey(), firstSel);
 					emb.put(entry.getKey(), lastSel);
-					resOut.write(entryFirst.getKey()+" "+firstSel+" "+entry.getKey()+" "+lastSel+" ");//把映射结果写入文本，作用 类似上面两句
+					/*映射节点*/
+					resOut.write(entryFirst.getKey()+" "+firstSel+"\r\n"+entry.getKey()+" "+lastSel+"\r\n");//把映射结果写入文本，作用 类似上面两句
+					/*映射链路*/
+//					while(!pathSel.empty()) {
+//						resOut.write(pathSel.pop()+" ");
+//					}
+//					resOut.write("\r\n");
+//					resOut.write(entry.getKey()+" "+lastSel+" ");
+
 					
-					while(!pathSel.empty()) {
-						resOut.write(pathSel.pop()+" ");
-					}
-					resOut.write("\r\n");
 					f[firstSel]=true;//物理节点被最终选定后，记得标记下，后面不再选择
 					f[lastSel]=true;
-					
-					resOut.write(entry.getKey()+" "+lastSel+" ");
 					
 					System.out.println("embedding___最终映射结果__前两个节点"+firstSel+"--"+lastSel);
 				}else {//对于除了前两个节点以外的其他节点的映射
@@ -145,28 +145,25 @@ public class Embedding {
 					
 					
 					/*在这里就可以把映射结果加入到map里面啦*/
-					
 					emb.put(entry.getKey(), lastSel);
-					resOut.write(entry.getKey()+" "+lastSel+" ");
+					/*映射节点*/
+					resOut.write(entry.getKey()+" "+lastSel+" "+"\r\n");
 
-					while(!pathSel.empty()) {
-						resOut.write(pathSel.pop()+" ");
-					}
-					resOut.write("\r\n");
+					/*映射链路*/
+//					while(!pathSel.empty()) {
+//						resOut.write(pathSel.pop()+" ");
+//					}
+//					resOut.write("\r\n");
+//					resOut.write(entry.getKey()+" "+lastSel+" ");//开始用于方便下一行节点和链路的记录，后来改了结果写入方式
 					f[lastSel]=true;
-					
-					resOut.write(entry.getKey()+" "+lastSel+" ");
-					
 				}
 				t++;		
 			}
 			
 			resOut.close();
-
 		}catch(Exception e){
 			System.out.println("Embedding__embedding():"+e);
 		}
-				
 		return emb;
 	}
 
