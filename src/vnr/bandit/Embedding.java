@@ -1,7 +1,9 @@
 package vnr.bandit;
 
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,23 +19,30 @@ public class Embedding {
 	 * vn把虚拟网络请求的拓扑图传递给方法<p>
 	 * pn把物理网络拓扑图传递给方法<p>
 	 * linkedhashmap用于存储链路映射结果<p>*/
-	public static LinkedHashMap<Integer,Integer> embedding(LinkedHashMap<Integer,Double> embOrder,Graph vn,Graph pn){//n
+	
+	
+	String folder;
+	public Embedding(String f) {
+		folder=f;
+	}
+	
+	public LinkedHashMap<Integer,Integer> embedding(LinkedHashMap<Integer,Double> embOrder,Graph vn,Graph pn,int n){//n
 		LinkedHashMap<Integer,Integer> emb=new LinkedHashMap<Integer,Integer>();//用于存储最终的映射结果,用于返回结果
 		boolean[] f=new boolean[pn.getNumOfNode()];//用于标志这个节点有没有被当前虚拟网络映射过
 		int s;//用于存储被选中的节点的下标，因为是随机产生的，所以多次调用方法
-		
 
 //		File resFile =new File("result.txt");
 		try{
 			
-			BufferedWriter resOut = new BufferedWriter(new FileWriter("embed.txt"));
+			BufferedWriter resOut = new BufferedWriter(new FileWriter(folder+"\\res"+n+".txt"));
 			
-			/*映射第一个和第二个节点，随即选择三次后选择最好的*/
+			/*映射第一个和第二个节点，随机选择三次后选择最好的*/
 			System.out.println("Embedding__开始映射节点");
 			int lastSel=pn.getNumOfNode();//用于存储上一个VNR节点对应的物理节点,启发：这里定义是不合适的，因为这个值在遍历过程中是需要被带到下一次的。如果每次遍历到一个新的值都会被初始化的话就带不过去啦
 			
 			int t=0;//这里是为了补上当前这种map遍历的方法里面，没法轻松回退上一个的坑。用t来计数，如果是第一个节点，需要特殊处理。
-			Map.Entry<Integer, Double> entryFirst=null;//由于后面的if语句出现了未赋值错误，map.entry是接口，又没法初始化，所以用了null，
+			Map.Entry<Integer, Double> entryFirst=null;//存储
+			//由于后面的if语句出现了未赋值错误，map.entry是接口，又没法初始化，所以用了null，
 			//启发：不知道会不会运行出错，不过啊，在我的程序里，entryfirst一定是可以被正经赋值的，但愿不要出错。突然想通了空指针异常是怎么出现的，对于引用型，可能开始没有赋初始值，后面用的时候报错，所以就跑回来，用null赋值，后来及出现了空指针的异常，
 			//不确定是不是这样，但是觉得有可能
 			Map.Entry<Integer, Double> entry;
@@ -97,11 +106,21 @@ public class Embedding {
 					}
 					
 					/*在这里就可以把映射结果加入到map里面啦*/
-//					System.out.println("test222222:"+pathSel.empty());
 					emb.put(entryFirst.getKey(), firstSel);
 					emb.put(entry.getKey(), lastSel);
 					/*映射节点*/
-					resOut.write(entryFirst.getKey()+" "+firstSel+"\r\n"+entry.getKey()+" "+lastSel+"\r\n");//把映射结果写入文本，作用 类似上面两句
+					
+					resOut.write(vn.getNumOfNode()+" "+vn.getNumOfEdge()+"\r\n");//第一次映射写入虚拟网络节点数量和边数量
+					
+					resOut.write(entryFirst.getKey()+" "+firstSel+" "+vn.getCpu(entryFirst.getKey())+"\r\n"
+									+entry.getKey()+" "+lastSel+" "+vn.getCpu(entry.getKey())+"\r\n");//把映射结果写入文本，作用 类似上面两句
+					pn.setCpu(firstSel, pn.getCpu(firstSel)-vn.getCpu(entryFirst.getKey()));
+					pn.setCpu(lastSel, pn.getCpu(lastSel)-vn.getCpu(entry.getKey()));
+					
+					System.out.println(pn.getCpu(firstSel));
+					System.out.println(pn.getCpu(lastSel));
+					
+					
 					/*映射链路*/
 //					while(!pathSel.empty()) {
 //						resOut.write(pathSel.pop()+" ");
@@ -115,7 +134,6 @@ public class Embedding {
 					
 					System.out.println("embedding___最终映射结果__前两个节点"+firstSel+"--"+lastSel);
 				}else {//对于除了前两个节点以外的其他节点的映射
-					
 					Stack<Integer> pathSel=new Stack<Integer>();//某对被选中的节点最终被选中的路径
 					int lastSelTemp=lastSel;
 					entry=e;
@@ -143,11 +161,12 @@ public class Embedding {
 						}
 					}
 					
-					
 					/*在这里就可以把映射结果加入到map里面啦*/
 					emb.put(entry.getKey(), lastSel);
 					/*映射节点*/
-					resOut.write(entry.getKey()+" "+lastSel+" "+"\r\n");
+					resOut.write(entry.getKey()+" "+lastSel+" "+vn.getCpu(entry.getKey())+"\r\n");
+					pn.setCpu(lastSel, pn.getCpu(lastSel)-vn.getCpu(entry.getKey()));
+					System.out.println(pn.getCpu(lastSel));
 
 					/*映射链路*/
 //					while(!pathSel.empty()) {
@@ -166,6 +185,42 @@ public class Embedding {
 		}
 		return emb;
 	}
-
+	/**
+	 * 作用：虚拟链路映射
+	 * @param pn 基底网络，用于寻路
+	 * @param vn 虚拟网络，用于获取需要映射的边值信息
+	 * @param embNode 前面节点映射的结果
+	 * @param n 表示当前映射的是文件夹中第几个网络文件*/
+	public void embLink(Graph vn,Graph pn,LinkedHashMap<Integer, Integer> embNode,int n) throws Exception{
+		BufferedWriter resOut = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(folder+"\\res"+n+".txt",true)));
+		
+		double virWeight;
+		int a,b;//更新物理网络带宽时，用ab表示物理链路上相邻两个节点。
+		
+		for(int i=0;i<vn.getNumOfNode();i++) {
+			for(int j=i+1;j<vn.getNumOfNode();j++) {
+				virWeight=vn.getWeight(i, j);
+				Stack<Integer> pathSel=new Stack<Integer>();//某对被选中的节点最终被选中的路径
+				if(vn.getWeight(i, j)!=vn.getMax()) {
+//						Floyd.floyd(pn, i, j);*
+					resOut.write(i+" "+j+" "+virWeight+" ");
+					/*映射链路*/
+					Floyd.floyd(pn, embNode.get(i), embNode.get(j), pathSel);
+//					resOut.write(i+" "+j+"\r\n");
+					
+					while(!pathSel.empty()) {
+						a=pathSel.pop();
+						if(pathSel.size()>=1) {
+							b=pathSel.peek();
+							pn.setWeight(a, b, pn.getWeight(a, b)-virWeight);
+						}
+						resOut.write(a+" ");
+					}
+					resOut.write("\r\n");
+				}
+			}
+		}
+		resOut.close();
+	}
 
 }

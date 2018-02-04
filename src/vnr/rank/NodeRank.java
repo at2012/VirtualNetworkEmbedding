@@ -71,9 +71,6 @@ public class NodeRank {
 			}
 			z--;
 		}
-
-		
-
 		
 		/*把排名结果按照顺序存入list？？？？？？？？？？？？？*/
 		ArrayList<Map.Entry<Integer,Double>> entries=sortMap(map);
@@ -93,7 +90,8 @@ public class NodeRank {
 		
 		for(int i=0;i<g.getNumOfNode();i++){
 			if(m!=i){
-				int dis=Dijskra.dijskra(g, m, i);
+				int dis=Floyd.floyd(g, m, i, null);//改进：后来又写了一个不同参数的方法，可以不加null，但是没有测试结果对不对
+//				int dis=Dijskra.dijskra(g, m, i);
 				novM=novM+nov(m,i);
 			}
 		}

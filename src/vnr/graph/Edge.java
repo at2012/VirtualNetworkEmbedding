@@ -2,7 +2,8 @@ package vnr.graph;
 
 public class Edge {
 
-	private int x,y,weight;
+	private int x,y;
+	private double weight;
 	//成员变量访问器
 	public int getX(){ 
 		return x;
@@ -10,12 +11,12 @@ public class Edge {
 	public int getY(){
 		return y;
 	}
-	public int getWeight(){
+	public double getWeight(){
 		return weight;
 	}
 	
 	
-	public Edge(int x,int y,int weight){
+	public Edge(int x,int y,double weight){
 		this.x=x;
 		this.y=y;
 		this.weight=weight;
