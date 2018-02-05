@@ -20,18 +20,21 @@ public class Embedding {
 	 * pn把物理网络拓扑图传递给方法<p>
 	 * linkedhashmap用于存储链路映射结果<p>*/
 	
-	
 	String folder;
 	public Embedding(String f) {
 		folder=f;
 	}
-	
+	/**
+	 * 虚拟节点映射
+	 * @param emborder 按顺序排好的节点
+	 * @param vn 虚拟网络请求的拓扑图
+	 * @param pn 物理网络拓扑图
+	 * @param n 当前读取的是第几个虚拟网络文件*/
 	public LinkedHashMap<Integer,Integer> embedding(LinkedHashMap<Integer,Double> embOrder,Graph vn,Graph pn,int n){//n
 		LinkedHashMap<Integer,Integer> emb=new LinkedHashMap<Integer,Integer>();//用于存储最终的映射结果,用于返回结果
 		boolean[] f=new boolean[pn.getNumOfNode()];//用于标志这个节点有没有被当前虚拟网络映射过
 		int s;//用于存储被选中的节点的下标，因为是随机产生的，所以多次调用方法
 
-//		File resFile =new File("result.txt");
 		try{
 			
 			BufferedWriter resOut = new BufferedWriter(new FileWriter(folder+"\\res"+n+".txt"));
@@ -53,7 +56,6 @@ public class Embedding {
 				int firsTemp;//用于临时存储第一个虚拟节点某次被选中的物理节点
 				int lasTemp;//用于临时存储某个虚拟节点被临时选中的物理节点
 				//启发：上面两个temp变量是从下面if里面弄上来的，也不知道哪个好，但是那个pathTemp我不敢弄上来，怕前面的值会影响后面
-				
 								
 				if(t==0) {//对于第一个待映射节点
 					entryFirst=e;
@@ -120,7 +122,6 @@ public class Embedding {
 					System.out.println(pn.getCpu(firstSel));
 					System.out.println(pn.getCpu(lastSel));
 					
-					
 					/*映射链路*/
 //					while(!pathSel.empty()) {
 //						resOut.write(pathSel.pop()+" ");
@@ -128,7 +129,6 @@ public class Embedding {
 //					resOut.write("\r\n");
 //					resOut.write(entry.getKey()+" "+lastSel+" ");
 
-					
 					f[firstSel]=true;//物理节点被最终选定后，记得标记下，后面不再选择
 					f[lastSel]=true;
 					
@@ -139,7 +139,6 @@ public class Embedding {
 					entry=e;
 					
 					//放到这里不行，因为entry已经改变
-					
 					for(int j=0;j<3;j++) {
 						Stack<Integer> pathTemp=new Stack<Integer>();//用于存储被临时选中的路径；
 						Map<Integer,Double> sim=new HashMap<Integer,Double>();
@@ -167,7 +166,6 @@ public class Embedding {
 					resOut.write(entry.getKey()+" "+lastSel+" "+vn.getCpu(entry.getKey())+"\r\n");
 					pn.setCpu(lastSel, pn.getCpu(lastSel)-vn.getCpu(entry.getKey()));
 					System.out.println(pn.getCpu(lastSel));
-
 					/*映射链路*/
 //					while(!pathSel.empty()) {
 //						resOut.write(pathSel.pop()+" ");
@@ -178,7 +176,6 @@ public class Embedding {
 				}
 				t++;		
 			}
-			
 			resOut.close();
 		}catch(Exception e){
 			System.out.println("Embedding__embedding():"+e);
@@ -186,7 +183,7 @@ public class Embedding {
 		return emb;
 	}
 	/**
-	 * 作用：虚拟链路映射
+	 * 虚拟链路映射
 	 * @param pn 基底网络，用于寻路
 	 * @param vn 虚拟网络，用于获取需要映射的边值信息
 	 * @param embNode 前面节点映射的结果
@@ -207,12 +204,14 @@ public class Embedding {
 					/*映射链路*/
 					Floyd.floyd(pn, embNode.get(i), embNode.get(j), pathSel);
 //					resOut.write(i+" "+j+"\r\n");
-					
+					double xy=0;
 					while(!pathSel.empty()) {
 						a=pathSel.pop();
 						if(pathSel.size()>=1) {
 							b=pathSel.peek();
+							
 							pn.setWeight(a, b, pn.getWeight(a, b)-virWeight);
+							xy=pn.getWeight(a, b);
 						}
 						resOut.write(a+" ");
 					}

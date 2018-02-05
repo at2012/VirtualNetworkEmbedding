@@ -1,9 +1,11 @@
 package vnr.main;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -32,9 +34,7 @@ public class Main {
 		
 		
 		try {
-			BufferedReader phyReader=new BufferedReader(new FileReader("case0_sub.txt"));
-			
-//			BufferedReader virReader=new BufferedReader(new FileReader("req7.txt"));
+			BufferedReader phyReader=new BufferedReader(new FileReader("sub_case.txt"));
 			Embedding embeder = new Embedding(".\\Result");
 			
 			String line;
@@ -80,24 +80,24 @@ public class Main {
 			}
 			CreateGraph.create(gPhy, nodePhy, nodeNumPhy, edgePhy, edgeNumPhy);
 			
-			/*test:*/
+
+			
 			System.out.println("物理网络拓扑：");
-			for(int i=0;i<nodeNumPhy;i++) {
-				for(int j=0;j<nodeNumPhy;j++) {
-					System.out.print(gPhy.getWeight(i, j)+"\t");
+			for(int x=0;x<nodeNumPhy;x++) {
+				for(int y=0;y<nodeNumPhy;y++) {
+					System.out.print(gPhy.getWeight(x, y)+"\t");
 				}
 				System.out.println();
 			}
+			
+
 			
 			/*虚拟网络topo处理，把表示虚拟网络拓扑的文件存为Graph*/
 			File demo = new File(".\\Demo");
 			File[] vnrs=demo.listFiles();
 			
 			for(int j=0;j<vnrs.length;j++) {
-				
 				BufferedReader virReader = new BufferedReader(new InputStreamReader(new FileInputStream(vnrs[j])));
-//				InputStreamReader vnReader = new InputStreamReader(new FileInputStream(vnrs[i])) ;
-//				BufferedReader vnFilesReader = new BufferedReader(vnReader);
 				
 				lines.clear();
 				while((line=virReader.readLine())!=null) {
@@ -121,60 +121,106 @@ public class Main {
 					}	
 				}
 				CreateGraph.create(gVir, nodeVir, nodeNumVir, edgeVir, edgeNumVir);
+				
+				
+
+				
+				
 				/*计算节点排名以及映射顺序*/
 				NodeRank nr=new NodeRank(gVir);
 				rank=nr.rank();
 				embOrder=EmbedOrder.embOrder(rank,gVir);
 				
-				
 				result=embeder.embedding(embOrder, gVir, gPhy,j);
 				embeder.embLink(gVir, gPhy, result,j);
 				
 				
+				System.out.println("物理网络拓扑：");
+				for(int x=0;x<nodeNumPhy;x++) {
+					for(int y=0;y<nodeNumPhy;y++) {
+						System.out.print(gPhy.getWeight(x, y)+"\t");
+					}
+					System.out.println();
+				}
 				
-//				/*test:*/
-//				System.out.println("虚拟网络拓扑：");
-//				for(int m=0;m<nodeNumVir;m++) {
-//					for(int n=0;n<nodeNumVir;n++) {
-//						System.out.print(gVir.getWeight(m, n)+"\t");
+			}
+			
+			//==================================================================================================================
+			/*资源恢复*/
+			File resFolder = new File(".\\Result");
+			File[] res=resFolder.listFiles();
+						
+			for(int i=0;i<res.length;i++) {
+				BufferedReader resReader = new BufferedReader(new InputStreamReader(new FileInputStream(res[i])));
+				int nn=-1;
+				int ln=-1;//nn和ln分别用于表示网络节点数量和链路数量,改进,ln是一个没有被用到的变量
+				
+				
+//				BufferedWriter test = new BufferedWriter(new FileWriter("test"+i+".txt"));
+				
+				lines.clear();
+				while((line=resReader.readLine())!=null) {
+					lines.add(line);
+				}
+
+				for(int j=0;j<lines.size();j++) {
+					lineContent=lines.get(j).split(regex);
+					
+					if(j==0) {
+						//记录节点数量和边数量
+						nn=Integer.parseInt(lineContent[0]);
+						ln=Integer.parseInt(lineContent[1]);
+					}else if(j>0 && j<=nn) {
+						//恢复节点资源
+						int id=Integer.parseInt(lineContent[1]);//物理节点id
+						double c=Double.parseDouble(lineContent[2]);//等待恢复的资源值
+						gPhy.setCpu(id,gPhy.getCpu(id)+c);
+					}else {
+						//恢复链路资源
+						double w;//带宽资源
+						int l,n;//分别表示一段链路的起始和终止
+						w=Double.parseDouble(lineContent[2]);
+					
+						for(int x=3;x<lineContent.length-1;x++) {
+							l=Integer.parseInt(lineContent[x]);
+							n=Integer.parseInt(lineContent[x+1]);
+							gPhy.setWeight(l, n, gPhy.getWeight(l, n)+w);
+						}
+					}
+				}
+				
+				
+				System.out.println("物理网络拓扑：");
+				for(int x=0;x<nodeNumPhy;x++) {
+					for(int y=0;y<nodeNumPhy;y++) {
+						System.out.print(gPhy.getWeight(x, y)+"\t");
+					}
+					System.out.println();
+				}
+				
+				
+//				for(int x=0;x<nodeNumPhy;x++) {
+//					for(int y=0;y<nodeNumPhy;y++) {
+//						test.write(gPhy.getWeight(x, y)+"\t");
+//					}
+//					test.write("\r\n");
+//				}
+//				
+//				test.close();
+				
+				
+//				System.out.println("物理网络拓扑：");
+//				for(int x=0;x<nodeNumPhy;x++) {
+//					for(int y=0;y<nodeNumPhy;y++) {
+//						System.out.print(gPhy.getWeight(x, y)+"\t");
 //					}
 //					System.out.println();
 //				}
-//				System.out.println("下一个网络");
-			}
-			
-			
-			/*test:*/
-			System.out.println("物理网络拓扑：");
-			for(int i=0;i<nodeNumPhy;i++) {
-				for(int j=0;j<nodeNumPhy;j++) {
-					System.out.print(gPhy.getWeight(i, j)+"\t");
-				}
-				System.out.println();
-			}
-			
-			
-//			NodeRank nr=new NodeRank(gVir);
-//			rank=nr.rank();
-////			for(int i=0;i<rank.size();i++) {
-////				System.out.println("from main:"+"排名信息："+"key:"+rank.get(i).getKey()+"-value:"+rank.get(i).getValue());
-////			}
-//			System.out.println("from main--最终映射顺序:");
-//			embOrder=EmbedOrder.embOrder(rank,gVir);
-//			for(Map.Entry<Integer, Double> entry:embOrder.entrySet()){
-//				System.out.println(entry.getKey());
-//			}
-//			
-//			for(int i=0;i<gPhy.getNumOfNode();i++) {
-//				for(int j=0;j<gPhy.getNumOfNode();j++) {
-//					System.out.print(gPhy.getWeight(i, j)+"\t");
-//				}
-//				System.out.println();
-//			}
 //				
-//			for(Map.Entry<Integer, Integer> entry:result.entrySet()){
-//				System.out.println("最终对于VNR的映射结果："+entry.getKey()+"--"+entry.getValue());
-//			}
+				
+				
+			}
+
 			
 		}catch(Exception e) {
 			System.out.println("FROME MAIN:"+e);
