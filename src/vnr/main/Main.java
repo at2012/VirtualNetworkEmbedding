@@ -130,7 +130,7 @@ public class Main {
 				NodeRank nr=new NodeRank(gVir);
 				rank=nr.rank();
 				embOrder=EmbedOrder.embOrder(rank,gVir);
-				
+				/*节点映射+链路映射*/
 				result=embeder.embedding(embOrder, gVir, gPhy,j);
 				embeder.embLink(gVir, gPhy, result,j);
 				
@@ -189,13 +189,18 @@ public class Main {
 					}
 				}
 				
-				
+				/*test*/
 				System.out.println("物理网络拓扑：");
 				for(int x=0;x<nodeNumPhy;x++) {
 					for(int y=0;y<nodeNumPhy;y++) {
 						System.out.print(gPhy.getWeight(x, y)+"\t");
 					}
 					System.out.println();
+				}
+				
+				for(int x=0;x<nodeNumPhy;x++) {
+					
+					System.out.println(gPhy.getCpu(x));
 				}
 				
 				

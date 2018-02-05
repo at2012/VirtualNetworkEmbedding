@@ -202,24 +202,28 @@ public class Embedding {
 //						Floyd.floyd(pn, i, j);*
 					resOut.write(i+" "+j+" "+virWeight+" ");
 					/*映射链路*/
-					Floyd.floyd(pn, embNode.get(i), embNode.get(j), pathSel);
+					if(Floyd.floyd(pn, embNode.get(i), embNode.get(j), pathSel,virWeight)!=pn.getMax()) {
+						//满足带宽需求，实现资源划分
+//						Floyd.floyd(pn, embNode.get(i), embNode.get(j), pathSel,virWeight);
 //					resOut.write(i+" "+j+"\r\n");
-					double xy=0;
-					while(!pathSel.empty()) {
-						a=pathSel.pop();
-						if(pathSel.size()>=1) {
-							b=pathSel.peek();
-							
-							pn.setWeight(a, b, pn.getWeight(a, b)-virWeight);
-							xy=pn.getWeight(a, b);
+						while(!pathSel.empty()) {
+							a=pathSel.pop();
+							if(pathSel.size()>=1) {
+								b=pathSel.peek();
+								pn.setWeight(a, b, pn.getWeight(a, b)-virWeight);
+							}
+							resOut.write(a+" ");
 						}
-						resOut.write(a+" ");
+						resOut.write("\r\n");
+					}else {//带宽需求不能满足
+						System.out.println("未能满足带宽需求，链路映射失败");
 					}
-					resOut.write("\r\n");
+					
 				}
 			}
 		}
 		resOut.close();
+		
 	}
 
 }
