@@ -31,6 +31,10 @@ public class Main {
 		LinkedHashMap<Integer,Double> embOrder =new LinkedHashMap<Integer,Double>();//最终映射顺序
 		LinkedHashMap<Integer,Integer> result=new LinkedHashMap<Integer,Integer>();
 		
+		int sucCount=0;
+		int failCount=0;
+		
+		
 		
 		
 		try {
@@ -122,17 +126,32 @@ public class Main {
 				}
 				CreateGraph.create(gVir, nodeVir, nodeNumVir, edgeVir, edgeNumVir);
 				
-				
-
-				
-				
 				/*计算节点排名以及映射顺序*/
 				NodeRank nr=new NodeRank(gVir);
 				rank=nr.rank();
 				embOrder=EmbedOrder.embOrder(rank,gVir);
 				/*节点映射+链路映射*/
-				result=embeder.embedding(embOrder, gVir, gPhy,j);
-				embeder.embLink(gVir, gPhy, result,j);
+				
+				switch (embeder.embedding(embOrder, result, gVir, gPhy,j)) {
+				case 1://节点映射成功则进行链路映射
+					switch (embeder.embLink(gVir, gPhy, result,j)) {
+					case 1://链路映射成功
+						sucCount++;
+						break;
+					case -1://等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
+						failCount++;
+					default:
+						break;
+					}
+					break;
+				case -1://等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
+					failCount++;
+				default:
+					break;
+				}
+				
+//				embeder.embedding(embOrder, result, gVir, gPhy,j);
+//				embeder.embLink(gVir, gPhy, result,j);
 				
 				
 				System.out.println("物理网络拓扑：");
@@ -142,6 +161,7 @@ public class Main {
 					}
 					System.out.println();
 				}
+				System.out.println("成功映射数目："+sucCount);
 				
 			}
 			
