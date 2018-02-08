@@ -234,7 +234,6 @@ public class Embedding {
 							System.out.println("未能满足带宽需求，链路映射失败");
 							return -1;
 						}
-						
 					}
 				}
 			}
