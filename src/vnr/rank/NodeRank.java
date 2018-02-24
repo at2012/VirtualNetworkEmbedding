@@ -61,7 +61,7 @@ public class NodeRank {
 		int z=5;//排名计算的循环次数
 		while(z>0){
 			for(int i=0;i<n;i++){
-				map.put(i, 0.6*cpuPro[i]);
+				map.put(i, 0.6*cpuPro[i]);////关于0.15和0.85是这里吗？？？？？
 				for(int j=0;j<n;j++){
 					if(i!=j){
 						double t=map.get(i);

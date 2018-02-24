@@ -76,10 +76,24 @@ public class Main {
 			}
 			CreateGraph.create(gPhy, nodePhy, nodeNumPhy, edgePhy, edgeNumPhy);
 			
+//			System.out.println("ÎïÀíÍøÂçÍØÆË£º");
+//			for(int x=0;x<gPhy.getNumOfNode();x++) {
+//				for(int y=0;y<gPhy.getNumOfNode();y++) {
+//					System.out.print(gPhy.getWeight(x, y)+"\t");
+//				}
+//				System.out.println();
+//			}
+			
 			
 			System.out.println("²âÊÔÓ³ÉäÏß³Ì£¡£¡£¡£¡");
-			Thread emThread = new Thread(new embedThread(".\\topo-500-5-10-0", gPhy));
+			Thread emThread = new Thread(new embedThread(".\\req-star5-500-5-10-1", gPhy));
 			emThread.start();
+			
+			
+			
+			
+			
+			
 //			emThread.sleep(1000);
 //			
 			

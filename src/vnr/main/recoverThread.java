@@ -23,7 +23,7 @@ public class recoverThread implements Runnable {
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated 0method stub
 
 		/*资源恢复*/
 		File resFolder = new File(folder);
@@ -74,20 +74,19 @@ public class recoverThread implements Runnable {
 					}
 				}
 				
-				/*test*/
-				System.out.println("恢复后物理网络拓扑：");
-				for(int x=0;x<gPhy.getNumOfNode();x++) {
-					for(int y=0;y<gPhy.getNumOfNode();y++) {
-						System.out.print(gPhy.getWeight(x, y)+"\t");
-					}
-					System.out.println();
-				}
-				
-				for(int x=0;x<gPhy.getNumOfNode();x++) {
-					System.out.println(gPhy.getCpu(x));
-				}
+//				/*test*/
+//				System.out.println("恢复后物理网络拓扑：");
+//				for(int x=0;x<gPhy.getNumOfNode();x++) {
+//					for(int y=0;y<gPhy.getNumOfNode();y++) {
+//						System.out.print(gPhy.getWeight(x, y)+"\t");
+//					}
+//					System.out.println();
+//				}
+//				
+//				for(int x=0;x<gPhy.getNumOfNode();x++) {
+//					System.out.println(gPhy.getCpu(x));
+//				}
 			}
-
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("FROM recoverThread-"+e);

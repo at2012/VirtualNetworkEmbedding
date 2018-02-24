@@ -77,8 +77,8 @@ public class Floyd {
 					m=p[s][m];
 					path.push(m);
 				}
-				System.out.println("floyd--路径长度"+distance[s][d]);
-				System.out.println("floyd___路径映射结果：");
+//				System.out.println("floyd--路径长度"+distance[s][d]);
+//				System.out.println("floyd___路径映射结果：");
 			}
 			
 		}catch(Exception e){
@@ -115,11 +115,9 @@ public class Floyd {
 						}else {
 							distance[i][j]=g.getMax();
 						}
-						
 					}else {
 						distance[i][j]=0;					
 					}
-					
 				}
 			}
 			
@@ -133,8 +131,6 @@ public class Floyd {
 					}
 				}
 			}
-			
-			
 		}catch(Exception e){
 			System.out.println("Floyd:---"+e);
 		}

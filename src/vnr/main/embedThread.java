@@ -1,10 +1,8 @@
 package vnr.main;
 
-import java.awt.GraphicsConfigTemplate;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -109,30 +107,30 @@ public class embedThread implements Runnable {
 				
 				switch (embeder.embedding(embOrder, result, gVir, gPhy,j)) {
 				case 1://节点映射成功则进行链路映射
+					System.out.println("节点成功");
 					switch (embeder.embLink(gVir, gPhy, result,j)) {
 					case 1://链路映射成功
+						System.out.println("链路成功");
 						sucCount++;
 						break;
 					case -1://等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
 						failCount++;
-						
+						System.out.println("链路失败");
+						recover(j);
+						break;
 					default:
 						break;
 					}
 					break;
 				case -1://等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
 					failCount++;
+					System.out.println("节点失败");
+					recover(j);
+					break;
 				default:
 					break;
 				}
 				
-//				System.out.println("映射后物理网络拓扑：");
-//				for(int x=0;x<gPhy.getNumOfNode();x++) {
-//					for(int y=0;y<gPhy.getNumOfNode();y++) {
-//						System.out.print(gPhy.getWeight(x, y)+"\t");
-//					}
-//					System.out.println();
-//				}
 				System.out.println("成功映射数目："+sucCount);
 				System.out.println("失败映射数目："+failCount);
 			}
@@ -142,4 +140,66 @@ public class embedThread implements Runnable {
 		}
 	}
 
+	/**
+	 * @param a 用于标识在映射失败后需要恢复资源的结果文件**/
+	public void recover(int a) {
+		String line;
+		String regex=" ";
+		String[] lineContent;
+		List<String> lines=new LinkedList<String>();
+		
+		File resDel = new File(".\\Result\\res"+a+".txt");
+		System.out.println(".\\Result\\res"+a+".txt");
+		
+		try {
+			BufferedReader resReader = new BufferedReader(new InputStreamReader(
+					new FileInputStream(resDel)));
+			int nn=-1;
+			int ln=-1;//nn和ln分别用于表示网络节点数量和链路数量,改进,ln是一个没有被用到的变量
+			
+//				BufferedWriter test = new BufferedWriter(new FileWriter("test"+i+".txt"));
+			
+			lines.clear();
+			while((line=resReader.readLine())!=null) {
+				lines.add(line);
+			}
+
+			for(int i=0;i<lines.size();i++) {
+				lineContent=lines.get(i).split(regex);
+				if(i==0) {
+					//记录节点数量和边数量
+					nn=Integer.parseInt(lineContent[0]);
+					ln=Integer.parseInt(lineContent[1]);
+				}else if(i>0 && i<=nn) {
+					//恢复节点资源
+					int id=Integer.parseInt(lineContent[1]);//物理节点id
+					double c=Double.parseDouble(lineContent[2]);//等待恢复的资源值
+					gPhy.setCpu(id,gPhy.getCpu(id)+c);
+				}else {
+					//恢复链路资源
+					double w;//带宽资源
+					int l,n;//分别表示一段链路的起始和终止
+					w=Double.parseDouble(lineContent[2]);
+				
+					for(int x=3;x<lineContent.length-1;x++) {
+						l=Integer.parseInt(lineContent[x]);
+						n=Integer.parseInt(lineContent[x+1]);
+						gPhy.setWeight(l, n, gPhy.getWeight(l, n)+w);
+					}
+				}
+			}
+			
+			
+			resReader.close();
+			System.gc();
+	        resDel.delete();
+			
+//			resDel.delete();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("FROM recoverThread-"+e);
+		}
+		
+		
+	}
 }

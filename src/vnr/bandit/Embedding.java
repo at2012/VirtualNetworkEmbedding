@@ -42,7 +42,7 @@ public class Embedding {
 			BufferedWriter resOut = new BufferedWriter(new FileWriter(folder+"\\res"+n+".txt"));
 			
 			/*映射第一个和第二个节点，随机选择三次后选择最好的*/
-			System.out.println("Embedding__开始映射节点");
+//			System.out.println("Embedding__开始映射节点");
 			int lastSel=pn.getNumOfNode();//用于存储上一个VNR节点对应的物理节点,启发：这里定义是不合适的，因为这个值在遍历过程中是需要被带到下一次的。如果每次遍历到一个新的值都会被初始化的话就带不过去啦
 			
 			int t=0;//这里是为了补上当前这种map遍历的方法里面，没法轻松回退上一个的坑。用t来计数，如果是第一个节点，需要特殊处理。
@@ -80,7 +80,7 @@ public class Embedding {
 							if(!sim.isEmpty()) {
 								firsTemp=ProbabilitySelected.proSelected(sim);
 								fTemp[firsTemp]=true;
-								System.out.println("embedding___此次选中节点"+firsTemp);
+//								System.out.println("embedding___此次选中节点"+firsTemp);
 							}else {
 								return -1;
 							}
@@ -102,7 +102,7 @@ public class Embedding {
 							}
 							if(!sim.isEmpty()) {
 								lasTemp=ProbabilitySelected.proSelected(sim);
-								System.out.println("embedding__此次选中节点："+lasTemp);
+//								System.out.println("embedding__此次选中节点："+lasTemp);
 							}else {
 								return -1;
 							}							
@@ -131,8 +131,8 @@ public class Embedding {
 					pn.setCpu(firstSel, pn.getCpu(firstSel)-vn.getCpu(entryFirst.getKey()));
 					pn.setCpu(lastSel, pn.getCpu(lastSel)-vn.getCpu(entry.getKey()));
 					
-					System.out.println(pn.getCpu(firstSel));
-					System.out.println(pn.getCpu(lastSel));
+//					System.out.println(pn.getCpu(firstSel));
+//					System.out.println(pn.getCpu(lastSel));
 					
 					/*映射链路*/
 //					while(!pathSel.empty()) {
@@ -144,7 +144,7 @@ public class Embedding {
 					f[firstSel]=true;//物理节点被最终选定后，记得标记下，后面不再选择
 					f[lastSel]=true;
 					
-					System.out.println("embedding___最终映射结果__前两个节点"+firstSel+"--"+lastSel);
+//					System.out.println("embedding___最终映射结果__前两个节点"+firstSel+"--"+lastSel);
 				}else {//对于除了前两个节点以外的其他节点的映射
 					Stack<Integer> pathSel=new Stack<Integer>();//某对被选中的节点最终被选中的路径
 					int lastSelTemp=lastSel;
@@ -160,7 +160,7 @@ public class Embedding {
 							}
 						}
 						lasTemp=ProbabilitySelected.proSelected(sim);
-						System.out.println("embedding____此次选中节点：___else:"+lasTemp);
+//						System.out.println("embedding____此次选中节点：___else:"+lasTemp);
 						/*在路径映射中找到好的映射点*/
 						int pathLengthTemp=Floyd.floyd(pn, lastSelTemp, lasTemp, pathTemp);
 						//启发：不能在这里就把lastSel更改，因为后面往回回溯的时候是需要用到的！！！所以从下面改成了上面
@@ -177,7 +177,7 @@ public class Embedding {
 					/*映射节点*/
 					resOut.write(entry.getKey()+" "+lastSel+" "+vn.getCpu(entry.getKey())+"\r\n");
 					pn.setCpu(lastSel, pn.getCpu(lastSel)-vn.getCpu(entry.getKey()));
-					System.out.println(pn.getCpu(lastSel));
+//					System.out.println(pn.getCpu(lastSel));
 					/*映射链路*/
 //					while(!pathSel.empty()) {
 //						resOut.write(pathSel.pop()+" ");
@@ -195,6 +195,9 @@ public class Embedding {
 //		return emb;
 		return 1;
 	}
+	
+	
+	
 	/**
 	 * 虚拟链路映射
 	 * @param pn 基底网络，用于寻路
@@ -202,7 +205,6 @@ public class Embedding {
 	 * @param embNode 前面节点映射的结果
 	 * @param n 表示当前映射的是文件夹中第几个网络文件*/
 	public int embLink(Graph vn,Graph pn,LinkedHashMap<Integer, Integer> embNode,int n){
-		
 		try {
 			BufferedWriter resOut = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(folder+"\\res"+n+".txt",true)));
 			
