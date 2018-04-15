@@ -295,7 +295,7 @@ public class Embedding {
 	 * @param pn 基底网络，用于寻路
 	 * @param vn 虚拟网络，用于获取需要映射的边值信息
 	 * @param n 表示当前映射的是文件夹中第几个网络文件，用于定位要恢复的文件*/
-	public void recoverSource(Graph vn,int n) {
+	public void recoverSource(Graph pn,int n) {
 //		BufferedWriter resOut = new BufferedWriter(new FileWriter(folder+"\\res"+n+".txt"));
 		File recoverFile = new File(folder+"\\res"+n+".txt");
 		BufferedReader failEmbedReader=null;
@@ -319,8 +319,8 @@ public class Embedding {
 				lineContent=lines.get(i).split(regex);
 //				if(lineContent.length==2) {
 				if (i<=nodeNum) {//如果是节点信息，则把节点资源恢复给物理网络
-					vn.setCpu(Integer.parseInt(lineContent[1])
-							,vn.getCpu(Integer.parseInt(lineContent[1]))+Double.parseDouble(lineContent[2]));
+					pn.setCpu(Integer.parseInt(lineContent[1])
+							,pn.getCpu(Integer.parseInt(lineContent[1]))+Double.parseDouble(lineContent[2]));
 				}else {
 					int flag=3;//用于表示待恢复的物理链路，flag和flag+1表示一条链路
 					double w=Double.parseDouble(lineContent[2]);
@@ -328,7 +328,7 @@ public class Embedding {
 						int s,d;
 						s=Integer.parseInt(lineContent[flag]);
 						d=Integer.parseInt(lineContent[flag+1]);
-						vn.setWeight(s, d, vn.getWeight(s, d)+w);
+						pn.setWeight(s, d, pn.getWeight(s, d)+w);
 						flag++;
 					}
 				}	
@@ -344,7 +344,7 @@ public class Embedding {
 					System.out.println(e);
 				}
 				Logger.getGlobal().info("删除失败文件");
-//				recoverFile.delete();
+				recoverFile.delete();
 			}
 		}
 		

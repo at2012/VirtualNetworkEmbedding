@@ -22,7 +22,7 @@ public class Main {
 		
 		
 		try {
-			BufferedReader phyReader=new BufferedReader(new FileReader("sub_case.txt"));
+			BufferedReader phyReader=new BufferedReader(new FileReader("sub.txt"));
 //			Embedding embeder = new Embedding(".\\Result");
 			
 			String line;
@@ -77,13 +77,6 @@ public class Main {
 			emThread.run();
 			
 			
-			Logger.getGlobal().info("Ê£ÓàÎïÀíÍøÂçÍØÆË");
-		for(int x=0;x<gPhy.getNumOfNode();x++) {
-			for(int y=0;y<gPhy.getNumOfNode();y++) {
-				System.out.print(gPhy.getWeight(x, y)+"\t");
-			}
-			System.out.println();
-		}
 			
 //			emThread.sleep(1000);
 //			

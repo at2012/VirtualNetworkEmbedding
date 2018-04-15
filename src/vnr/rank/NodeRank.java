@@ -102,7 +102,6 @@ public class NodeRank {
 				novM=novM+nov(m,i);
 			}
 		}
-		System.out.println(novM+"ceshi");
 		return novM;
 	}
 	/**

@@ -3,12 +3,15 @@ package vnr.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
@@ -67,13 +70,13 @@ public class embedThread implements Runnable {
 //			//网络映射相关变量：noderank
 //			List<Map.Entry<Integer,Double>> rank=new ArrayList<Map.Entry<Integer,Double>>();//VNR
 
-			Logger.getGlobal().info("未映射物理网络拓扑：");
-			for(int x=0;x<gPhy.getNumOfNode();x++) {
-				for(int y=0;y<gPhy.getNumOfNode();y++) {
-					System.out.print(gPhy.getWeight(x, y)+"\t");
-				}
-				System.out.println();
-			}
+//			Logger.getGlobal().info("未映射物理网络拓扑：");
+//			for(int x=0;x<gPhy.getNumOfNode();x++) {
+//				for(int y=0;y<gPhy.getNumOfNode();y++) {
+//					System.out.print(gPhy.getWeight(x, y)+"\t");
+//				}
+//				System.out.println();
+//			}
 			
 			/*虚拟网络topo处理，把表示虚拟网络拓扑的文件存为Graph*/
 			File demo = new File(folder);
@@ -105,7 +108,7 @@ public class embedThread implements Runnable {
 				
 				for(int i=0;i<lines.size();i++) {
 					lineContent=lines.get(i).split(regex);
-					if(lineContent.length==2) {
+					if(lineContent.length==4) {
 						nodeNumVir=Integer.parseInt(lineContent[0]);
 						edgeNumVir=Integer.parseInt(lineContent[1]);
 						
@@ -148,16 +151,18 @@ public class embedThread implements Runnable {
 						/*统计映射收益*/
 						System.out.println("映射成功"+j+"收益:"+gVir.getTolSource());
 //						gVir.getTolSource();
-						
-						
 //						aveLength=linkNumCount/gVir.getNumOfEdge();
 //						System.out.println("平均长度"+aveLength);
 						sucCount++;
+						
+						Timer timer=new Timer();
+						timer.schedule(new recoverSourceTimerTask(gPhy, j), 3*1000);
+						
 						break;
 					} else {
 						//如果等于-1，链路映射失败。等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
 
-						embeder.recoverSource(gVir, j);
+						embeder.recoverSource(gPhy, j);
 						
 						failCount++;
 					}
@@ -185,24 +190,6 @@ public class embedThread implements Runnable {
 				tolLength+=avelength.get(i);
 			}
 			System.out.println("映射平均长度："+tolLength/sucCount);
-			
-			
-			System.out.println("映射后物理网络拓扑--x方法内：");
-			for(int x=0;x<gPhy.getNumOfNode();x++) {
-				for(int y=0;y<gPhy.getNumOfNode();y++) {
-					System.out.print(gPhy.getWeight(x, y)+"\t");
-				}
-				System.out.println();
-			}
-			
-			embeder.recoverSource(gPhy, 0);
-			System.out.println("映射后物理网络拓扑--：");
-			for(int x=0;x<gPhy.getNumOfNode();x++) {
-				for(int y=0;y<gPhy.getNumOfNode();y++) {
-					System.out.print(gPhy.getWeight(x, y)+"\t");
-				}
-				System.out.println();
-			}
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -223,6 +210,60 @@ public class embedThread implements Runnable {
 		
 		@Override
 		public void run() {
+			File recoverFile = new File(".\\Result\\res"+n+".txt");
+			BufferedReader failEmbedReader=null;
+			try {
+				failEmbedReader=new BufferedReader(new FileReader(recoverFile));
+				String line;
+				String regex=" ";
+				String[] lineContent;
+				List<String> lines=new LinkedList<String>();
+				
+				int nodeNum;
+				int linkNum;
+				
+				while((line=failEmbedReader.readLine())!=null) {
+					lines.add(line);
+				}
+				lineContent=lines.get(0).split(" ");
+				nodeNum=Integer.parseInt(lineContent[0]);
+				linkNum=Integer.parseInt(lineContent[1]);//改进：链路数量可嫩没用
+				for(int i=1;i<lines.size();i++) {//第一行是节点数目、链路数，不需要处理
+					lineContent=lines.get(i).split(regex);
+//					if(lineContent.length==2) {
+					if (i<=nodeNum) {//如果是节点信息，则把节点资源恢复给物理网络
+						gPhy.setCpu(Integer.parseInt(lineContent[1])
+								,gPhy.getCpu(Integer.parseInt(lineContent[1]))+Double.parseDouble(lineContent[2]));
+					}else {
+						int flag=3;//用于表示待恢复的物理链路，flag和flag+1表示一条链路
+						double w=Double.parseDouble(lineContent[2]);
+						while(flag<lineContent.length-1) {
+							int s,d;
+							s=Integer.parseInt(lineContent[flag]);
+							d=Integer.parseInt(lineContent[flag+1]);
+							gPhy.setWeight(s, d, gPhy.getWeight(s, d)+w);
+							flag++;
+						}
+					}	
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e+"--embedding.java/recoversource");
+			}finally {
+				if(failEmbedReader != null) {
+					try {
+						failEmbedReader.close();
+					} catch (IOException e) {
+						System.out.println(e);
+					}
+					Logger.getGlobal().info("这里是资源恢复计时器--删除已经恢复文件"+n);
+					
+//					recoverFile.delete();
+				}
+			}
+			
+			
+			
 
 		}
 		
