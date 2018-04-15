@@ -32,15 +32,18 @@ public class NodeRank {
 		double tolInit=0.00;//用作量化的分母。
 		double[] cpuPro=new double[g.getNumOfNode()];
 		double tolCpu=0.00;
+//		double[] resourceBlock=new double[getClass().ge];//用于表示某个节点资源值
 		
 		
 		Map<Integer,Double> map=new HashMap<Integer,Double>();//节点的排名值，key-value分别是：节点在图中下标，节点的当前排名值
 		
 		for(int i=0;i<n;i++){
-			tolCpu+=g.getCpu(i);
+//			tolCpu+=g.getNode(i).getResourceBlock();//后来考虑节点cpu*bandwidth
+			tolCpu+=(g.getCpu(i)*g.getBandwidth(i));//最初只考虑节点CPU
 		}
 		for(int i=0;i<n;i++){
-			cpuPro[i]=g.getCpu(i)/tolCpu;
+//			cpuPro[i]=g.getNode(i).getResourceBlock()/tolCpu;//后来考虑节点cpu*bandwidth
+			cpuPro[i]=(g.getCpu(i)*g.getBandwidth(i))/tolCpu;
 		}
 		for(int i=0;i<g.getNumOfNode();i++){
 			temp[i]=novM(i);
@@ -75,14 +78,18 @@ public class NodeRank {
 		/*把排名结果按照顺序存入list？？？？？？？？？？？？？*/
 		ArrayList<Map.Entry<Integer,Double>> entries=sortMap(map);
 		for(int i=0;i<g.getNumOfNode();i++){
-			map.put(entries.get(i).getKey(), entries.get(i).getValue());//这个语句，把list又转换成了map，参考下下面被注释掉的一个输出，便于理解。。。。经过测试，这个是不行的。
+			map.put(entries.get(i).getKey(), entries.get(i).getValue());
+			//这个语句，把list又转换成了map，参考下下面被注释掉的一个输出，便于理解。。。。经过测试，这个是不行的。
 		}
 		return entries;
 	}
-/**计算两个节点间影响。*/
+/**计算两个节点间影响。
+ * @param m
+ * @param n 有路径的两个点之间的相互影响*/
 	public double nov(int m,int n)throws Exception{
 		int dis=Floyd.floyd(g, m, n, null);
-		return (double)g.getCpu(m)*g.getCpu(n)/(double)(dis*dis)*0.01;//这里乘的0.01是在把代码初步实现运行之后，发现结果不理想，挨个排查发现，这一步的值到后来很容易变得特别特别大，不好收敛，于是，用0.01进行修正，让他能收敛
+		return (double)g.getCpu(m)*g.getCpu(n)/(double)(dis*dis);//这里乘的0.01是在把代码初步实现运行之后，发现结果不理想，挨个排查发现，这一步的值到后来很容易变得特别特别大，不好收敛，于是，用0.01进行修正，让他能收敛
+//		return (double)g.getNode(m).getResourceBlock()*g.getNode(n).getResourceBlock()/(double)(dis*dis)*(2.5e-5);
 	} 
 /**全局其他节点对某个节点的综合影响*/
 	public double novM(int m)throws Exception{
@@ -95,6 +102,7 @@ public class NodeRank {
 				novM=novM+nov(m,i);
 			}
 		}
+		System.out.println(novM+"ceshi");
 		return novM;
 	}
 	/**

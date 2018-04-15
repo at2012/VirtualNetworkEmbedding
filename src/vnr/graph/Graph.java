@@ -10,6 +10,8 @@ public class Graph {
 	private List<Node> nodeList;//启发，注意这里一定要写好数组中元素的类型，好调用该类型提供的方法
 	private double[][] edges;
 	private int numOfEdge;
+	
+	private double tolSource;//结果分析用，统计当前网络的所有资源总和，cpu和+带宽和
 /**
  * 构造函数开辟了存储n个节点的空间，
  * 开辟了存储边的矩阵空间，并且初步初始化这个矩阵，
@@ -17,6 +19,7 @@ public class Graph {
 	public Graph(int n){
 		nodeList=new ArrayList<Node>(n);
 		edges=new double[n][n];
+		tolSource=0;
 		
 		for(int i=0;i<n;i++){
 			for(int j=0;j<n;j++){
@@ -46,16 +49,20 @@ public class Graph {
 	/**获取节点的cpu值
 	 * @param n 节点编号
 	 * */
-	public double getCpu(int n)throws Exception{
+	public double getCpu(int n){
 		return nodeList.get(n).getCpu();
 	}
 	public int getDegree(int n){//得到网络中指定下标的节点的节点度，疑惑：不知道为啥，总感觉没有特别大的必要去添加这么 一个方法。
 		return nodeList.get(n).getDegree();
 	}
+	public double getBandwidth(int n){//得到网络中指定下标的节点的节点度，疑惑：不知道为啥，总感觉没有特别大的必要去添加这么 一个方法。
+		return nodeList.get(n).getBandwidth();
+	}
+//	public double get
 	/**获取图中节点mn之间边的权重*/
-	public double getWeight(int m,int n)throws Exception{
-		if(m<0||m>nodeList.size()||n<0||n>nodeList.size())
-			throw new Exception("参数错误");
+	public double getWeight(int m,int n){
+//		if(m<0||m>nodeList.size()||n<0||n>nodeList.size())
+//			throw new Exception("参数错误");
 		return edges[m][n];
 	}
 	/**获取图中节点数量*/
@@ -67,6 +74,20 @@ public class Graph {
 	}
 	public double[][] getEdges(){
 		return edges;
+	}
+	
+	public double getTolSource() {
+//		for(int i=0;i<nodeList.size();i++){
+//			tolSource+=this.getCpu(i);
+//		}
+		for(int i=0;i<nodeList.size();i++) {
+			for(int j=i+1;j<nodeList.size();j++) {
+				if(getWeight(i, j)!=this.getMax()) {
+					tolSource+=this.getWeight(i, j);
+				}
+			}
+		}
+		return tolSource;
 	}
 	
 	/**更新节点cpu值

@@ -1,36 +1,28 @@
 package vnr.main;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
 
-import vnr.bandit.Embedding;
 import vnr.graph.CreateGraph;
 import vnr.graph.Edge;
 import vnr.graph.Graph;
 import vnr.graph.Node;
-import vnr.rank.EmbedOrder;
-import vnr.rank.NodeRank;
 
 public class Main {
 
+	
+	static volatile Graph gPhy=null;
+	
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
 		int nodeNumPhy=-1,edgeNumPhy=-1;
 		
 		
 		try {
-			BufferedReader phyReader=new BufferedReader(new FileReader("sub.txt"));
+			BufferedReader phyReader=new BufferedReader(new FileReader("sub_case.txt"));
 //			Embedding embeder = new Embedding(".\\Result");
 			
 			String line;
@@ -43,7 +35,9 @@ public class Main {
 			//虽然知道在运行过程中可以被正确定义，但是还是担心----启发：后面处理拓扑图的时候用到edge，但是定义在try里面，
 			//所以不能用，错误同上一个启发。
 			Node[] nodePhy=null;
-			Graph gPhy=null;//启发：之前edge\node\g的定义以及创建都被定义在了if里面，由于变量的定义在if块厘米，
+//			Graph gPhy=null;//启发：之前edge\node\g的定义以及创建都被定义在了if里面，由于变量的定义在if块厘米，
+			
+			
 			//使用在else块里面，所以使用的时候报错：变量未被定义。所以把定义放在了这里，创建再放在if里面，应该么有问题了吧
 			
 //			/*虚拟网络相关变量*/
@@ -57,6 +51,7 @@ public class Main {
 			/*物理网络topo处理，把表示物理网络拓扑的文件存为Graph*/
 			while((line=phyReader.readLine())!=null) {
 				lines.add(line);
+//				System.out.println();
 			}
 			for(int i=0;i<lines.size();i++) {
 				lineContent=lines.get(i).split(regex);
@@ -76,10 +71,20 @@ public class Main {
 			}
 			CreateGraph.create(gPhy, nodePhy, nodeNumPhy, edgePhy, edgeNumPhy);
 			
+			Logger.getGlobal().info("开始映射");
+			Thread emThread = new Thread(new embedThread(".\\requests-500-9-10-10", gPhy));
+//			emThread.start();
+			emThread.run();
 			
-			System.out.println("测试映射线程！！！！");
-			Thread emThread = new Thread(new embedThread(".\\topo-500-5-10-0", gPhy));
-			emThread.start();
+			
+			Logger.getGlobal().info("剩余物理网络拓扑");
+		for(int x=0;x<gPhy.getNumOfNode();x++) {
+			for(int y=0;y<gPhy.getNumOfNode();y++) {
+				System.out.print(gPhy.getWeight(x, y)+"\t");
+			}
+			System.out.println();
+		}
+			
 //			emThread.sleep(1000);
 //			
 			

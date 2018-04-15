@@ -4,22 +4,7 @@ public class Node {
 	
 	private double cpu;
 	private int degree;
-	
-	public double getCpu(){
-		return cpu;
-	}
-	public int getDegree(){
-		return degree;
-	}
-	
-	public void setCpu(double x) {
-		cpu=x;
-	}
-	
-	
-	public void addDegree(){//在插入边之后节点的degree就会增加
-		degree++;
-	}
+	private double bandwidth;
 	
 	public Node(double c){//在还未完善节点建模的时候可以这么用
 		cpu=c;
@@ -30,7 +15,33 @@ public class Node {
 		degree=d;
 	}
 	
-
-
-
+	public double getCpu(){
+		return cpu;
+	}
+	public int getDegree(){
+		return degree;
+	}
+	public double getBandwidth() {
+		return bandwidth;
+	}
+	
+	public double getResourceBlock() {
+		return bandwidth*cpu;
+	}
+	
+	public void setCpu(double x) {
+		cpu=x;
+	}
+	
+	
+	
+	public void addDegree(){//在插入边之后节点的degree就会增加
+		degree++;
+	}
+	/**
+	 * @param bw 新加入节点与当前节点之间的链路权重*/
+	public void addBandwidth(double bw) {
+		bandwidth+=bw;
+	}
+	
 }

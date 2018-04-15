@@ -149,6 +149,7 @@ public class Floyd {
 	 * @param d 目的节点
 	 * @param path 用于存储路径结果
 	 * @param w 带宽限制值
+	 * @return sd之间最短路径链路长度
 	 *  */
 	public static int floyd(Graph g,int s,int d,Stack<Integer> path,double w) {
 		
