@@ -12,6 +12,8 @@ public class Graph {
 	private int numOfEdge;
 	
 	private double tolSource;//结果分析用，统计当前网络的所有资源总和，cpu和+带宽和
+	
+	public int survivalTime;
 /**
  * 构造函数开辟了存储n个节点的空间，
  * 开辟了存储边的矩阵空间，并且初步初始化这个矩阵，
@@ -33,6 +35,30 @@ public class Graph {
 		}
 		numOfEdge=0;
 	}
+	
+	/**
+	 * 用于构建虚拟网络
+	 * @param n 节点数
+	 * @param sTime 网络生存时间*/
+	public Graph(int n,int sTime){
+		nodeList=new ArrayList<Node>(n);
+		edges=new double[n][n];
+		survivalTime=sTime;
+		tolSource=0;
+		
+		for(int i=0;i<n;i++){
+			for(int j=0;j<n;j++){
+				if(i==j){
+					edges[i][j]=0;
+				}
+				else{
+					edges[i][j]=maxWeight;
+				}
+			}
+		}
+		numOfEdge=0;
+	}
+	
 	
 	
 	//访问器

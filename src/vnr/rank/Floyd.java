@@ -77,8 +77,8 @@ public class Floyd {
 					m=p[s][m];
 					path.push(m);
 				}
-				System.out.println("floyd--路径长度"+distance[s][d]);
-				System.out.println("floyd___路径映射结果：");
+//				System.out.println("floyd--路径长度"+distance[s][d]);
+//				System.out.println("floyd___路径映射结果：");
 			}
 			
 		}catch(Exception e){

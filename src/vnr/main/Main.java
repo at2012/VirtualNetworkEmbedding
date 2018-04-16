@@ -75,11 +75,9 @@ public class Main {
 			Thread emThread = new Thread(new embedThread(".\\requests-500-9-10-10", gPhy));
 //			emThread.start();
 			emThread.run();
+			//是的，你可能会觉得我不会用，为什么是调用的是run方法，而不是start方法，emmm。。。其实我只是不想把它当线程用了。。。就当普通方法用就好了。。。
 			
 			
-			
-//			emThread.sleep(1000);
-//			
 			
 //			System.out.println("测试恢复线程！！！！");
 //			Thread reThread = new Thread(new recoverThread(".\\Result", gPhy));
