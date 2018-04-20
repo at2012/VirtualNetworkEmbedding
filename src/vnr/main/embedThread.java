@@ -97,7 +97,7 @@ public class embedThread implements Runnable {
 				List<Map.Entry<Integer,Double>> rank=new ArrayList<Map.Entry<Integer,Double>>();//VNR
 				//这个语句本来也在上面，受到下面的启发，一起挪过来了
 				
-				int linkNumCount;//用于统计虚拟网络在物理网络上的平均路径长度
+				double consumeCount;//用于统计虚拟网络在物理网络上的平均路径长度
 				
 				double aveLength;//虚拟网路映射到物理网络后的平均链路长度
 				
@@ -150,13 +150,15 @@ public class embedThread implements Runnable {
 //					default:
 //						break;
 //					}
-					linkNumCount=embeder.embLink(gVir, gPhy, result,j);
-					if (linkNumCount>0) {//如果虚拟网网络映射成功，统计该虚拟网络链路平均长度，同时统计映射成功数目,
+					consumeCount=embeder.embLink(gVir, gPhy, result,j);
+					if (consumeCount>0) {//如果虚拟网网络映射成功，统计该虚拟网络链路平均长度，同时统计映射成功数目,
 						//还要打开相应文件的计时器,准备恢复该文件对应的资源
-						avelength.add((double)linkNumCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
+//						avelength.add((double)linkNumCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
+						avelength.add((double)consumeCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
+//						avelength.add(consumeCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
 						/*统计映射收益*/
 						System.out.println("映射成功"+j+"收益:"+gVir.getTolSource());
-						System.out.println("映射成功"+j+"消耗：");
+						System.out.println("映射成功"+j+"消耗："+consumeCount);
 //						gVir.getTolSource();
 //						aveLength=linkNumCount/gVir.getNumOfEdge();
 //						System.out.println("平均长度"+aveLength);
@@ -183,7 +185,7 @@ public class embedThread implements Runnable {
 				System.out.println("成功映射数目："+sucCount);
 				System.out.println("失败映射数目："+failCount);
 				
-				Thread.sleep(500);
+				Thread.sleep(100);
 				
 			}
 			
@@ -269,144 +271,144 @@ public class embedThread implements Runnable {
 	}
 
 	/**用于在计时器中进行资源映射*/
-	class embedTimerTask extends TimerTask{
-
-		File[] vnrs;
-		Embedding embeder;
-		int i;
-		/**
-		 * 构造映射计时器任务
-		 * @param v 把文件夹中文件数组传入
-		 * @param e 把用于映射的变量传入
-		 * @param j 表示当前处理的第j个网络请求*/
-		public embedTimerTask(File[] v,Embedding e,int j) {
-			vnrs=v;
-			embeder=e;
-			i=j;
-		}
-		
-		@Override
-		public void run() {
-			String line;
-			String regex=" ";
-			String[] lineContent;
-			List<String> lines=new ArrayList<String>();
-			
-			/*虚拟网络相关变量*/
-			Edge[] edgeVir=null;
-			Node[] nodeVir=null;
-			Graph gVir=null;
-			
-			int nodeNumVir=-1,edgeNumVir=-1;
-			
-			try {
-//				for(int j=0;j<vnrs.length;j++) {
-					BufferedReader virReader = new BufferedReader(new InputStreamReader(new FileInputStream(vnrs[i])));
-					
-					//网络映射相关变量：noderank
-					List<Map.Entry<Integer,Double>> rank=new ArrayList<Map.Entry<Integer,Double>>();//VNR
-					//这个语句本来也在上面，受到下面的启发，一起挪过来了
-					
-					int linkNumCount;//用于统计虚拟网络在物理网络上的平均路径长度
-					
-					double aveLength;//虚拟网路映射到物理网络后的平均链路长度
-					
-					LinkedHashMap<Integer,Double> embOrder =new LinkedHashMap<Integer,Double>();//最终映射顺序
-					LinkedHashMap<Integer,Integer> result=new LinkedHashMap<Integer,Integer>();
-					//启发：本来这两个变量的定义是在上面，但是运行的时候出现数组越界异常，debug发现result的似乎不太对，所以怀疑是前面对变量的赋值影响了后面
-					//试图调整变量定义的位置，使得每个虚拟网络请求都有自己的排序变量，所以放到for里面创建，果然不再出现异常
-					
-					
-					lines.clear();
-					while((line=virReader.readLine())!=null) {
-						lines.add(line);
-					}
-					
-					for(int i=0;i<lines.size();i++) {
-						lineContent=lines.get(i).split(regex);
-						if(lineContent.length==4) {
-							nodeNumVir=Integer.parseInt(lineContent[0]);
-							edgeNumVir=Integer.parseInt(lineContent[1]);
-							
-							edgeVir=new Edge[edgeNumVir];
-							nodeVir=new Node[nodeNumVir];
-							gVir=new Graph(nodeNumVir,Integer.parseInt(lineContent[3]));
-						}else if(lineContent.length==1) {
-							nodeVir[i-1]=new Node(Double.parseDouble(lineContent[0]));
-						}else {
-							edgeVir[i-1-nodeNumVir]=new Edge(Integer.parseInt(lineContent[0]),Integer.parseInt(lineContent[1]),
-									Double.parseDouble(lineContent[2]));
-						}	
-					}
-					CreateGraph.create(gVir, nodeVir, nodeNumVir, edgeVir, edgeNumVir);
-					
-					/*计算节点排名以及映射顺序*/
-					NodeRank nr=new NodeRank(gVir);
-					rank=nr.rank();  
-//					for(int u=0;u<rank.size();u++) {
-//						System.out.println(rank.get(u).getKey()+"-"+rank.get(u).getValue());
+//	class embedTimerTask extends TimerTask{
+//
+//		File[] vnrs;
+//		Embedding embeder;
+//		int i;
+//		/**
+//		 * 构造映射计时器任务
+//		 * @param v 把文件夹中文件数组传入
+//		 * @param e 把用于映射的变量传入
+//		 * @param j 表示当前处理的第j个网络请求*/
+//		public embedTimerTask(File[] v,Embedding e,int j) {
+//			vnrs=v;
+//			embeder=e;
+//			i=j;
+//		}
+//		
+//		@Override
+//		public void run() {
+//			String line;
+//			String regex=" ";
+//			String[] lineContent;
+//			List<String> lines=new ArrayList<String>();
+//			
+//			/*虚拟网络相关变量*/
+//			Edge[] edgeVir=null;
+//			Node[] nodeVir=null;
+//			Graph gVir=null;
+//			
+//			int nodeNumVir=-1,edgeNumVir=-1;
+//			
+//			try {
+////				for(int j=0;j<vnrs.length;j++) {
+//					BufferedReader virReader = new BufferedReader(new InputStreamReader(new FileInputStream(vnrs[i])));
+//					
+//					//网络映射相关变量：noderank
+//					List<Map.Entry<Integer,Double>> rank=new ArrayList<Map.Entry<Integer,Double>>();//VNR
+//					//这个语句本来也在上面，受到下面的启发，一起挪过来了
+//					
+//					int linkNumCount;//用于统计虚拟网络在物理网络上的平均路径长度
+//					
+//					double aveLength;//虚拟网路映射到物理网络后的平均链路长度
+//					
+//					LinkedHashMap<Integer,Double> embOrder =new LinkedHashMap<Integer,Double>();//最终映射顺序
+//					LinkedHashMap<Integer,Integer> result=new LinkedHashMap<Integer,Integer>();
+//					//启发：本来这两个变量的定义是在上面，但是运行的时候出现数组越界异常，debug发现result的似乎不太对，所以怀疑是前面对变量的赋值影响了后面
+//					//试图调整变量定义的位置，使得每个虚拟网络请求都有自己的排序变量，所以放到for里面创建，果然不再出现异常
+//					
+//					
+//					lines.clear();
+//					while((line=virReader.readLine())!=null) {
+//						lines.add(line);
 //					}
-					embOrder=EmbedOrder.embOrder(rank,gVir);
-					/*节点映射+链路映射*/
-					switch (embeder.embedNode(embOrder, result, gVir, gPhy,i)) {
-					case 1://节点映射成功则进行链路映射
-//						switch (embeder.embLink(gVir, gPhy, result,j)) {
-//						case 1://链路映射成功
+//					
+//					for(int i=0;i<lines.size();i++) {
+//						lineContent=lines.get(i).split(regex);
+//						if(lineContent.length==4) {
+//							nodeNumVir=Integer.parseInt(lineContent[0]);
+//							edgeNumVir=Integer.parseInt(lineContent[1]);
+//							
+//							edgeVir=new Edge[edgeNumVir];
+//							nodeVir=new Node[nodeNumVir];
+//							gVir=new Graph(nodeNumVir,Integer.parseInt(lineContent[3]));
+//						}else if(lineContent.length==1) {
+//							nodeVir[i-1]=new Node(Double.parseDouble(lineContent[0]));
+//						}else {
+//							edgeVir[i-1-nodeNumVir]=new Edge(Integer.parseInt(lineContent[0]),Integer.parseInt(lineContent[1]),
+//									Double.parseDouble(lineContent[2]));
+//						}	
+//					}
+//					CreateGraph.create(gVir, nodeVir, nodeNumVir, edgeVir, edgeNumVir);
+//					
+//					/*计算节点排名以及映射顺序*/
+//					NodeRank nr=new NodeRank(gVir);
+//					rank=nr.rank();  
+////					for(int u=0;u<rank.size();u++) {
+////						System.out.println(rank.get(u).getKey()+"-"+rank.get(u).getValue());
+////					}
+//					embOrder=EmbedOrder.embOrder(rank,gVir);
+//					/*节点映射+链路映射*/
+//					switch (embeder.embedNode(embOrder, result, gVir, gPhy,i)) {
+//					case 1://节点映射成功则进行链路映射
+////						switch (embeder.embLink(gVir, gPhy, result,j)) {
+////						case 1://链路映射成功
+////							sucCount++;
+////							break;
+////						case -1://等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
+////							failCount++;
+////							break;
+////						default:
+////							break;
+////						}
+//						linkNumCount=embeder.embLink(gVir, gPhy, result,i);
+//						if (linkNumCount>0) {//如果虚拟网网络映射成功，统计该虚拟网络链路平均长度，同时统计映射成功数目,
+//							//还要打开相应文件的计时器,准备恢复该文件对应的资源
+//							avelength.add((double)linkNumCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
+//							/*统计映射收益*/
+//							System.out.println("映射成功"+i+"收益:"+gVir.getTolSource());
+////							gVir.getTolSource();
+////							aveLength=linkNumCount/gVir.getNumOfEdge();
+////							System.out.println("平均长度"+aveLength);
 //							sucCount++;
+//							
+//							Timer timer=new Timer();
+//							timer.schedule(new recoverSourceTimerTask(gPhy, i), gVir.survivalTime);
+//							
 //							break;
-//						case -1://等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
+//						} else {
+//							//如果等于-1，链路映射失败。等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
+//
+//							embeder.recoverSource(gPhy, i);
+//							
 //							failCount++;
-//							break;
-//						default:
-//							break;
 //						}
-						linkNumCount=embeder.embLink(gVir, gPhy, result,i);
-						if (linkNumCount>0) {//如果虚拟网网络映射成功，统计该虚拟网络链路平均长度，同时统计映射成功数目,
-							//还要打开相应文件的计时器,准备恢复该文件对应的资源
-							avelength.add((double)linkNumCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
-							/*统计映射收益*/
-							System.out.println("映射成功"+i+"收益:"+gVir.getTolSource());
-//							gVir.getTolSource();
-//							aveLength=linkNumCount/gVir.getNumOfEdge();
-//							System.out.println("平均长度"+aveLength);
-							sucCount++;
-							
-							Timer timer=new Timer();
-							timer.schedule(new recoverSourceTimerTask(gPhy, i), gVir.survivalTime);
-							
-							break;
-						} else {
-							//如果等于-1，链路映射失败。等待补充:映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
-
-							embeder.recoverSource(gPhy, i);
-							
-							failCount++;
-						}
-						
-						
-						
-						break;
-					case -1://等待补充:节点映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
-						
-						
-						
-						failCount++;
-					default:
-						break;
-					}
-					
-
-					System.out.println("成功映射数目："+sucCount);
-					System.out.println("失败映射数目："+failCount);
-//				}
-				
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			
-			
-		}
-		
-	}
+//						
+//						
+//						
+//						break;
+//					case -1://等待补充:节点映射失败后除了统计失败数量,还需要把被这个失败映射占用的资源恢复回来
+//						
+//						
+//						
+//						failCount++;
+//					default:
+//						break;
+//					}
+//					
+//
+//					System.out.println("成功映射数目："+sucCount);
+//					System.out.println("失败映射数目："+failCount);
+////				}
+//				
+//			} catch (Exception e) {
+//				// TODO: handle exception
+//			}
+//			
+//			
+//		}
+//		
+//	}
 	
 }

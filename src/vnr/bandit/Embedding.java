@@ -224,9 +224,10 @@ public class Embedding {
 	 * @param n 表示当前映射的是文件夹中第几个网络文件
 	 * @return countLinkNum 表示映射所有链路后的长度
 	 * @return consume 整个网络的链路代价*/
-	public int embLink(Graph vn,Graph pn,LinkedHashMap<Integer,Integer> nodeEmbedResult,int n){
-		int countLinkNum=0;
+	public double embLink(Graph vn,Graph pn,LinkedHashMap<Integer,Integer> nodeEmbedResult,int n){
+		
 		double consume=0;
+		int countLinkNum=0;
 		BufferedWriter resOut = null;
 		
 			try {
@@ -237,10 +238,9 @@ public class Embedding {
 				boolean[][] flag=new boolean[vn.getNumOfNode()][vn.getNumOfNode()];//标记链路是否已经被映射过，初始化默认为false
 				
 //				int countLinkNum=0;
-				
-				
 				for(Map.Entry<Integer, Integer>e:nodeEmbedResult.entrySet()) {
 					int i=e.getKey();
+//					int countLinkNum=0;
 					for(int j=0;j<vn.getNumOfNode();j++) {
 						virWeight=vn.getWeight(i, j);
 						Stack<Integer> pathSel=new Stack<Integer>();//某对被选中的节点最终被选中的路径
@@ -252,7 +252,8 @@ public class Embedding {
 								//满足带宽需求，实现资源划分
 	//						Floyd.floyd(pn, embNode.get(i), embNode.get(j), pathSel,virWeight);
 	//					resOut.write(i+" "+j+"\r\n");
-								countLinkNum+=pathSel.size();
+								countLinkNum+=(pathSel.size()-1);
+								
 								while(!pathSel.empty()) {
 									a=pathSel.pop();
 									if(pathSel.size()>=1) {
@@ -264,6 +265,9 @@ public class Embedding {
 								flag[i][j]=true;
 								flag[j][i]=true;
 								resOut.write("\r\n");
+								
+//								consume+=countLinkNum * vn.getWeight(i, j);
+								
 							}else {//带宽需求不能满足
 								System.out.println("未能满足带宽需求，链路映射失败");
 //								resOut.close();
@@ -272,7 +276,6 @@ public class Embedding {
 						}
 						
 					}
-					
 				}
 //				resOut.close();
 			}catch(Exception e) {
@@ -289,6 +292,7 @@ public class Embedding {
 				
 			}
 			return countLinkNum;
+//			return consume;
 		}
 
 	

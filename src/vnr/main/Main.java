@@ -72,7 +72,7 @@ public class Main {
 			CreateGraph.create(gPhy, nodePhy, nodeNumPhy, edgePhy, edgeNumPhy);
 			
 			Logger.getGlobal().info("开始映射");
-			Thread emThread = new Thread(new embedThread(".\\requests-500-9-10-10", gPhy));
+			Thread emThread = new Thread(new embedThread(".\\requests-500-6-5-10-5", gPhy));
 //			emThread.start();
 			emThread.run();
 			//是的，你可能会觉得我不会用，为什么是调用的是run方法，而不是start方法，emmm。。。其实我只是不想把它当线程用了。。。就当普通方法用就好了。。。
