@@ -223,10 +223,10 @@ public class Embedding {
 	 * @param embNode 前面节点映射的结果
 	 * @param n 表示当前映射的是文件夹中第几个网络文件
 	 * @return countLinkNum 表示映射所有链路后的长度
-	 * @return consume 整个网络的链路代价*/
+	 * @return consume 整个网络的映射开销*/
 	public double embLink(Graph vn,Graph pn,LinkedHashMap<Integer,Integer> nodeEmbedResult,int n){
 		
-		double consume=0;
+		double consumeSum=0;
 		int countLinkNum=0;
 		BufferedWriter resOut = null;
 		
@@ -259,6 +259,7 @@ public class Embedding {
 									if(pathSel.size()>=1) {
 										b=pathSel.peek();
 										pn.setWeight(a, b, pn.getWeight(a, b)-virWeight);
+										consumeSum+=virWeight;
 									}
 									resOut.write(a+" ");
 								}
@@ -288,11 +289,9 @@ public class Embedding {
 						// TODO: handle exception
 					}
 				}
-				
-				
 			}
-			return countLinkNum;
-//			return consume;
+//			return countLinkNum;
+			return consumeSum;
 		}
 
 	

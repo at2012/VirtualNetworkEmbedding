@@ -150,11 +150,11 @@ public class embedThread implements Runnable {
 //					default:
 //						break;
 //					}
-					consumeCount=embeder.embLink(gVir, gPhy, result,j);
+					consumeCount=embeder.embLink(gVir, gPhy, result,j);//consumeCount已经是映射该网络的消耗的统计结果
 					if (consumeCount>0) {//如果虚拟网网络映射成功，统计该虚拟网络链路平均长度，同时统计映射成功数目,
 						//还要打开相应文件的计时器,准备恢复该文件对应的资源
 //						avelength.add((double)linkNumCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
-						avelength.add((double)consumeCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
+//						avelength.add((double)consumeCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
 //						avelength.add(consumeCount/gVir.getNumOfEdge());//统计该网络链路平均映射长度
 						/*统计映射收益*/
 						System.out.println("映射成功"+j+"收益:"+gVir.getTolSource());
@@ -194,7 +194,7 @@ public class embedThread implements Runnable {
 			for(int i=0;i<avelength.size();i++) {
 				tolLength+=avelength.get(i);
 			}
-			System.out.println("映射平均长度："+tolLength/sucCount);
+			System.out.println("映射平均长度(不考虑此指标）："+tolLength/sucCount);
 
 		} catch (Exception e) {
 			// TODO: handle exception

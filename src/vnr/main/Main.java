@@ -12,15 +12,9 @@ import vnr.graph.Graph;
 import vnr.graph.Node;
 
 public class Main {
-
-	
 	static volatile Graph gPhy=null;
-	
-	
 	public static void main(String[] args) {
 		int nodeNumPhy=-1,edgeNumPhy=-1;
-		
-		
 		try {
 			BufferedReader phyReader=new BufferedReader(new FileReader("sub.txt"));
 //			Embedding embeder = new Embedding(".\\Result");
